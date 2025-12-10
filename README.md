@@ -1,98 +1,248 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# Docker Setup Guide
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+This guide explains how to run the React-NestJS-MySQL application using Docker.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## Prerequisites
 
-## Description
+- Docker installed on your system
+- Docker Compose installed on your system
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+## Project Structure
 
-## Project setup
-
-```bash
-$ npm install
+```
+.
+├── Dockerfile                 # Backend (NestJS) Dockerfile
+├── docker-compose.yml         # Orchestrates all services
+├── frontend/
+│   ├── Dockerfile            # Frontend (React) Dockerfile
+│   ├── nginx.conf            # Nginx configuration for serving React app
+│   └── .dockerignore         # Frontend Docker ignore file
+├── .dockerignore             # Backend Docker ignore file
+└── .env.docker               # Docker environment variables
 ```
 
-## Compile and run the project
+## Services
+
+The application consists of three Docker services:
+
+1. **MySQL Database** (`mysql`)
+   - Image: `mysql:8.0`
+   - Port: `3307:3306`
+   - Database: `react_nest_app`
+   - Credentials: root/root
+
+2. **NestJS Backend** (`backend`)
+   - Built from root Dockerfile
+   - Port: `3000:3000`
+   - Depends on MySQL
+   - Runs Prisma migrations on startup
+
+3. **React Frontend** (`frontend`)
+   - Built from frontend/Dockerfile
+   - Port: `80:80`
+   - Served by Nginx
+   - Depends on Backend
+
+## Quick Start
+
+### Option 1: Using Makefile (Recommended)
 
 ```bash
-# development
-$ npm run start
+# Production mode
+make prod              # Build and start all services
+make prod-logs         # View logs
+make prod-down         # Stop services
 
-# watch mode
-$ npm run start:dev
+# Development mode (with hot reload)
+make dev               # Build and start in dev mode
+make dev-logs          # View logs
+make dev-down          # Stop services
 
-# production mode
-$ npm run start:prod
+# Other useful commands
+make help              # Show all available commands
+make clean             # Clean up everything
 ```
 
-## Run tests
+### Option 2: Using Docker Compose Directly
+
+#### Production Mode
 
 ```bash
-# unit tests
-$ npm run test
+# Build and start
+docker-compose up --build
 
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+# Stop
+docker-compose down
 ```
 
-## Deployment
-
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
-
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+#### Development Mode (with hot reload)
 
 ```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
+# Build and start
+docker-compose -f docker-compose.dev.yml up --build
+
+# Stop
+docker-compose -f docker-compose.dev.yml down
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+### Access the Application
 
-## Resources
+**Production Mode:**
+- **Frontend**: http://localhost (port 80)
+- **Backend API**: http://localhost:3000
+- **MySQL**: localhost:3307
 
-Check out a few resources that may come in handy when working with NestJS:
+**Development Mode:**
+- **Frontend**: http://localhost:5173 (Vite dev server)
+- **Backend API**: http://localhost:3000
+- **MySQL**: localhost:3307
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+## Development Workflow
 
-## Support
+### Development vs Production
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+**Development Mode** (`docker-compose.dev.yml`):
+- Hot reload enabled for both frontend and backend
+- Source code mounted as volumes
+- Faster iteration during development
+- Frontend runs on Vite dev server (port 5173)
 
-## Stay in touch
+**Production Mode** (`docker-compose.yml`):
+- Optimized builds
+- Multi-stage Docker builds
+- Frontend served by Nginx (port 80)
+- Smaller image sizes
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+### Run in Detached Mode
 
-## License
+```bash
+# Production
+make prod-up
+# or
+docker-compose up -d
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+# Development
+make dev-up
+# or
+docker-compose -f docker-compose.dev.yml up -d
+```
+
+### View Logs
+
+```bash
+# Using Makefile
+make logs          # Production logs
+make dev-logs      # Development logs
+
+# Using Docker Compose
+docker-compose logs -f
+docker-compose logs -f backend
+docker-compose logs -f frontend
+docker-compose logs -f mysql
+```
+
+### Rebuild a Specific Service
+
+```bash
+# Rebuild backend
+docker-compose up -d --build backend
+
+# Rebuild frontend
+docker-compose up -d --build frontend
+```
+
+### Execute Commands in Containers
+
+```bash
+# Using Makefile
+make backend-shell     # Access backend container
+make mysql-shell       # Access MySQL
+make db-migrate        # Run Prisma migrations
+make db-studio         # Open Prisma Studio
+
+# Using Docker directly
+docker exec -it nestjs-backend sh
+docker exec -it mysql-db mysql -u root -proot react_nest_app
+docker exec -it nestjs-backend npx prisma migrate dev
+docker exec -it nestjs-backend npx prisma studio
+```
+
+## Environment Variables
+
+### Backend (.env.docker)
+```
+DATABASE_URL="mysql://root:root@mysql:3306/react_nest_app"
+PORT=3000
+```
+
+### Frontend (.env.production)
+```
+VITE_API_URL=http://localhost:3000
+```
+
+## Troubleshooting
+
+### MySQL Connection Issues
+
+If the backend can't connect to MySQL:
+```bash
+# Check MySQL health
+docker-compose ps
+
+# View MySQL logs
+docker-compose logs mysql
+
+# Restart MySQL
+docker-compose restart mysql
+```
+
+### Frontend Can't Connect to Backend
+
+1. Ensure backend is running: `docker-compose ps`
+2. Check backend logs: `docker-compose logs backend`
+3. Verify CORS settings in `src/main.ts`
+
+### Port Already in Use
+
+If ports 80, 3000, or 3307 are already in use, modify `docker-compose.yml`:
+```yaml
+ports:
+  - "8080:80"    # Frontend
+  - "3001:3000"  # Backend
+  - "3308:3306"  # MySQL
+```
+
+### Clean Rebuild
+
+```bash
+# Stop all containers
+docker-compose down -v
+
+# Remove all images
+docker-compose rm -f
+
+# Rebuild from scratch
+docker-compose build --no-cache
+
+# Start services
+docker-compose up
+```
+
+## Production Deployment
+
+For production deployment:
+
+1. Update environment variables
+2. Use proper secrets management
+3. Configure proper CORS origins
+4. Use a reverse proxy (nginx/traefik)
+5. Enable HTTPS
+6. Set up proper logging and monitoring
+
+## Notes
+
+- The MySQL data is persisted in a Docker volume named `mysql_data`
+- Frontend is built as a static site and served by Nginx
+- Backend runs in production mode
+- Prisma migrations run automatically on backend startup
+
