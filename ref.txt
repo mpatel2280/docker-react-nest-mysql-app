@@ -1,40 +1,12 @@
-successfully created the User module with Prisma and MySQL. Here's a summary of what was created:
+Refer DOCKER_README.md
 
-Files Created
-Prisma Setup:
+make dev
+make dev-down 
 
-prisma/schema.prisma - User model with MySQL datasource
-src/prisma/prisma.service.ts - Prisma service for database connections
-src/prisma/prisma.module.ts - Global Prisma module
-User Module:
+```bash
+# Build and start
+docker-compose -f docker-compose.dev.yml up --build
 
-src/user/dto/create-user.dto.ts - DTO for creating users
-src/user/dto/update-user.dto.ts - DTO for updating users
-src/user/user.service.ts - CRUD operations service
-src/user/user.controller.ts - REST API controller
-src/user/user.module.ts - User module
-API Endpoints
-Method	Endpoint	Description
-POST	/users	Create a new user
-GET	/users	Get all users
-GET	/users/:id	Get a user by ID
-PATCH	/users/:id	Update a user
-DELETE	/users/:id	Delete a user
-
-
-Next Steps
-Configure MySQL connection - Update .env file with your MySQL connection string:
-
-DATABASE_URL="mysql://USER:PASSWORD@HOST:PORT/DATABASE"
-
-Run DB Migraion
-npx prisma migrate dev --name init
-
-Start the application (backend)
-npm run start:dev
-
-
-Start frontned 
-cd frontend
-npm install
-npm run dev
+# Stop
+docker-compose -f docker-compose.dev.yml down
+```
