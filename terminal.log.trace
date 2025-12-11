@@ -1,0 +1,147 @@
+=======================================================================================================================
+2025-12-11 08:36:36
+=======================================================================================================================
+
+u@u:~/code/docker-react-nest-mysql-app$ docker exec nestjs-backend-dev npx prisma migrate dev --name add_password_to_user
+Error response from daemon: No such container: nestjs-backend-dev
+u@u:~/code/docker-react-nest-mysql-app$ 
+u@u:~/code/docker-react-nest-mysql-app$ docker ps -a | grep nestjs
+u@u:~/code/docker-react-nest-mysql-app$ 
+u@u:~/code/docker-react-nest-mysql-app$ docker-compose -f docker-compose.dev.yml up -d --build
+WARN[0000] /home/manish/code/docker-react-nest-mysql-app/docker-compose.dev.yml: `version` is obsolete 
+[+] Building 106.4s (20/20) FINISHED                             docker:default
+ => [backend internal] load build definition from Dockerfile.dev           0.3s
+ => => transferring dockerfile: 493B                                       0.0s
+ => [frontend internal] load metadata for docker.io/library/node:20-alpin  4.2s
+ => [backend auth] library/node:pull token for registry-1.docker.io        0.0s
+ => [backend internal] load .dockerignore                                  0.2s
+ => => transferring context: 568B                                          0.0s
+ => [frontend 1/4] FROM docker.io/library/node:20-alpine@sha256:643e7036a  0.0s
+ => [backend internal] load build context                                  0.2s
+ => => transferring context: 4.03kB                                        0.0s
+ => CACHED [backend 2/7] RUN apk add --no-cache openssl libc6-compat       0.0s
+ => CACHED [backend 3/7] WORKDIR /app                                      0.0s
+ => CACHED [backend 4/7] COPY package*.json ./                             0.0s
+ => [backend 5/7] COPY prisma ./prisma/                                    0.8s
+ => [backend 6/7] RUN npm install                                         87.9s
+ => [backend 7/7] RUN npx prisma generate                                  3.6s 
+ => [backend] exporting to image                                           5.9s 
+ => => exporting layers                                                    5.6s 
+ => => writing image sha256:ced66df4163097ce2138485d7b5123f51b25783f3137d  0.0s 
+ => => naming to docker.io/library/docker-react-nest-mysql-app-backend     0.1s 
+ => [frontend internal] load build definition from Dockerfile.dev          0.3s 
+ => => transferring dockerfile: 365B                                       0.0s
+ => [frontend internal] load .dockerignore                                 0.2s
+ => => transferring context: 440B                                          0.0s
+ => [frontend internal] load build context                                 0.1s
+ => => transferring context: 809B                                          0.0s
+ => CACHED [frontend 2/4] WORKDIR /app                                     0.0s
+ => CACHED [frontend 3/4] COPY package*.json ./                            0.0s
+ => CACHED [frontend 4/4] RUN npm install                                  0.0s
+ => [frontend] exporting to image                                          0.1s
+ => => exporting layers                                                    0.0s
+ => => writing image sha256:6912c8fdfc4f94b9a254bf465f5e7342729b3b449340b  0.0s
+ => => naming to docker.io/library/docker-react-nest-mysql-app-frontend    0.0s
+[+] Running 3/4
+ ✔ Network docker-react-nest-mysql-app_app-network  Created                0.5s 
+ ✔ Container mysql-db-dev                           Created                0.9s 
+ ✔ Container nestjs-backend-dev                     Created               21.0s 
+[+] Running 4/4act-frontend-de[+] Running 3/4     
+ ✔ Network docker-react-nest-mysql-app_app-network  Created                                                                                                            0.5s 
+ ✔ Container mysql-db-dev                           Healthy                                                                                                          109.2s 
+ ✔ Container nestjs-backend-dev                     Started                                                                                                          114.7s 
+ ✔ Container react-frontend-dev                     Started                                                                                                           99.6s 
+u@u:~/code/docker-react-nest-mysql-app$ 
+u@u:~/code/docker-react-nest-mysql-app$ docker exec nestjs-backend-dev npm install bcrypt @types/bcrypt
+
+added 6 packages, changed 19 packages, and audited 703 packages in 27s
+
+139 packages are looking for funding
+  run `npm fund` for details
+
+found 0 vulnerabilities
+u@u:~/code/docker-react-nest-mysql-app$ 
+u@u:~/code/docker-react-nest-mysql-app$ docker exec nestjs-backend-dev npx prisma migrate dev --name add_password_to_user
+Environment variables loaded from .env
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": MySQL database "react_nest_app" at "mysql:3306"
+
+
+Error: 
+⚠️ We found changes that cannot be executed:
+
+  • Step 0 Added the required column `password` to the `user` table without a default value. There are 2 rows in this table, it is not possible to execute this step.
+
+You can use prisma migrate dev --create-only to create the migration file, and manually modify it to address the underlying issue(s).
+Then run prisma migrate dev to apply it and verify it works.
+
+u@u:~/code/docker-react-nest-mysql-app$ 
+u@u:~/code/docker-react-nest-mysql-app$ docker exec nestjs-backend-dev npx prisma migrate dev --create-only --name add_password_to_user
+Environment variables loaded from .env
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": MySQL database "react_nest_app" at "mysql:3306"
+
+
+
+⚠️ We found changes that cannot be executed:
+
+  • Step 0 Added the required column `password` to the `user` table without a default value. There are 2 rows in this table, it is not possible to execute this step.
+
+y
+Prisma Migrate created the following migration without applying it 20251211030636_add_password_to_user
+
+You can now edit it and apply it by running prisma migrate dev.
+┌─────────────────────────────────────────────────────────┐
+│  Update available 5.22.0 -> 7.1.0                       │
+│                                                         │
+│  This is a major update - please follow the guide at    │
+│  https://pris.ly/d/major-version-upgrade                │
+│                                                         │
+│  Run the following to update                            │
+│    npm i --save-dev prisma@latest                       │
+│    npm i @prisma/client@latest                          │
+└─────────────────────────────────────────────────────────┘
+u@u:~/code/docker-react-nest-mysql-app$ y
+
+ls -la prisma/migrations/ | tail -5
+y: command not found
+u@u:~/code/docker-react-nest-mysql-app$ 
+u@u:~/code/docker-react-nest-mysql-app$ ls -la prisma/migrations/ | tail -5
+drwxrwxr-x 3 manish manish 4096 Dec  2 10:47 ..
+drwxrwxr-x 2 manish manish 4096 Dec  2 10:47 20251202051746_init
+drwxrwxr-x 2 manish manish 4096 Dec  2 13:38 20251202080856_init
+drwxr-xr-x 2 root   root   4096 Dec 11 08:36 20251211030636_add_password_to_user
+-rw-rw-r-- 1 manish manish  121 Dec 11 08:36 migration_lock.toml
+u@u:~/code/docker-react-nest-mysql-app$ 
+u@u:~/code/docker-react-nest-mysql-app$ docker exec nestjs-backend-dev node -e "const bcrypt = require('bcrypt'); bcrypt.hash('changeme', 10).then(hash => console.log(hash));"
+$2b$10$fMfd4vVyEDFOsYCjFPGS3e5LFVtpRTyBK9Q1JFOPouZ13b.gjP7JO
+u@u:~/code/docker-react-nest-mysql-app$ 
+u@u:~/code/docker-react-nest-mysql-app$ docker exec nestjs-backend-dev npx prisma migrate deploy
+Environment variables loaded from .env
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": MySQL database "react_nest_app" at "mysql:3306"
+
+3 migrations found in prisma/migrations
+
+Applying migration `20251211030636_add_password_to_user`
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20251211030636_add_password_to_user/
+    └─ migration.sql
+      
+All migrations have been successfully applied.
+u@u:~/code/docker-react-nest-mysql-app$ 
+u@u:~/code/docker-react-nest-mysql-app$ docker exec nestjs-backend-dev npx prisma generate
+Environment variables loaded from .env
+Prisma schema loaded from prisma/schema.prisma
+
+✔ Generated Prisma Client (v5.22.0) to ./node_modules/@prisma/client in 1.29s
+
+Start by importing your Prisma Client (See: https://pris.ly/d/importing-client)
+
+Tip: Curious about the SQL queries Prisma ORM generates? Optimize helps you enhance your visibility: https://pris.ly/tip-2-optimize
+
+u@u:~/code/docker-react-nest-mysql-app$ 
+

@@ -5,6 +5,7 @@ import { userApi } from '../services/api';
 export default function UserForm() {
   const [email, setEmail] = useState('');
   const [name, setName] = useState('');
+  const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
@@ -33,9 +34,18 @@ export default function UserForm() {
 
     try {
       if (isEditing) {
-        await userApi.update(Number(id), { email, name: name || undefined });
+        const updateData: any = { email, name: name || undefined };
+        if (password) {
+          updateData.password = password;
+        }
+        await userApi.update(Number(id), updateData);
       } else {
-        await userApi.create({ email, name: name || undefined });
+        if (!password) {
+          setError('Password is required');
+          setLoading(false);
+          return;
+        }
+        await userApi.create({ email, name: name || undefined, password });
       }
       navigate('/users');
     } catch (err) {
@@ -69,6 +79,19 @@ export default function UserForm() {
             onChange={(e) => setEmail(e.target.value)}
             required
             placeholder="Enter email"
+          />
+        </div>
+        <div className="form-group">
+          <label htmlFor="password">
+            Password {isEditing && '(leave blank to keep current)'}
+          </label>
+          <input
+            type="password"
+            id="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required={!isEditing}
+            placeholder={isEditing ? 'Enter new password (optional)' : 'Enter password'}
           />
         </div>
         <div className="form-actions">

@@ -10,3 +10,9 @@ docker-compose -f docker-compose.dev.yml up --build
 # Stop
 docker-compose -f docker-compose.dev.yml down
 ```
+
+docker exec nestjs-backend-dev npm install bcrypt @types/bcrypt
+
+docker exec nestjs-backend-dev npx prisma migrate dev --name add_password_to_user
+
+docker exec nestjs-backend-dev npx prisma migrate dev --create-only --name add_password_to_user

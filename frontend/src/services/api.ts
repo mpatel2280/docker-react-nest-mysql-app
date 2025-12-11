@@ -30,11 +30,13 @@ export interface User {
 export interface CreateUserDto {
   email: string;
   name?: string;
+  password: string;
 }
 
 export interface UpdateUserDto {
   email?: string;
   name?: string;
+  password?: string;
 }
 
 export interface LoginDto {
@@ -65,6 +67,7 @@ export const authApi = {
     const response = await api.post<User>('/users', {
       email: data.email,
       name: data.name,
+      password: data.password,
     });
     return response.data;
   },
