@@ -36,6 +36,7 @@ The application consists of three Docker services:
    - Port: `3000:3000`
    - Depends on MySQL
    - Runs Prisma migrations on startup
+   - Includes authentication with bcrypt password hashing
 
 3. **React Frontend** (`frontend`)
    - Built from frontend/Dockerfile
@@ -96,6 +97,19 @@ docker-compose -f docker-compose.dev.yml down
 - **Frontend**: http://localhost:5173 (Vite dev server)
 - **Backend API**: http://localhost:3000
 - **MySQL**: localhost:3307
+
+### Default Login Credentials
+
+After the initial setup, existing users in the database will have a default password:
+
+- **Default Password**: `changeme`
+
+**Example Users:**
+- Email: `m1@test.com`, Password: `changeme`
+- Email: `admin2@admin.cm`, Password: `changeme`
+- Email: `m2@test.com`, Password: `changeme`
+
+New users created through the registration form will use the password they provide during signup.
 
 ## Development Workflow
 
@@ -239,10 +253,44 @@ For production deployment:
 5. Enable HTTPS
 6. Set up proper logging and monitoring
 
+## API Endpoints
+
+### Authentication
+- `POST /auth/login` - Login with email and password
+  ```json
+  {
+    "email": "user@example.com",
+    "password": "yourpassword"
+  }
+  ```
+
+### Users
+- `GET /users` - Get all users
+- `GET /users/:id` - Get user by ID
+- `POST /users` - Create new user (requires password)
+  ```json
+  {
+    "email": "user@example.com",
+    "name": "User Name",
+    "password": "yourpassword"
+  }
+  ```
+- `PATCH /users/:id` - Update user (password optional)
+- `DELETE /users/:id` - Delete user
+
+## Security Features
+
+- **Password Hashing**: All passwords are hashed using bcrypt with 10 salt rounds
+- **Password Exclusion**: Passwords are never returned in API responses
+- **Authentication**: Login endpoint validates credentials and returns user data
+- **Validation**: Email uniqueness and required fields are enforced
+
 ## Notes
 
 - The MySQL data is persisted in a Docker volume named `mysql_data`
 - Frontend is built as a static site and served by Nginx
 - Backend runs in production mode
 - Prisma migrations run automatically on backend startup
+- User passwords are securely hashed and never exposed in API responses
+- Existing users migrated from previous versions have the default password `changeme`
 
