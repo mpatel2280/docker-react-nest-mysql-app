@@ -256,18 +256,27 @@ For production deployment:
 ## API Endpoints
 
 ### Authentication
-- `POST /auth/login` - Login with email and password
+- `POST /auth/login` - Login with email and password, returns JWT token
   ```json
+  Request:
   {
     "email": "user@example.com",
     "password": "yourpassword"
   }
+
+  Response:
+  {
+    "id": 1,
+    "email": "user@example.com",
+    "name": "User Name",
+    "createdAt": "2025-12-11T00:00:00.000Z",
+    "updatedAt": "2025-12-11T00:00:00.000Z",
+    "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+  }
   ```
 
 ### Users
-- `GET /users` - Get all users
-- `GET /users/:id` - Get user by ID
-- `POST /users` - Create new user (requires password)
+- `POST /users` - Create new user (requires password, no authentication required)
   ```json
   {
     "email": "user@example.com",
@@ -275,14 +284,23 @@ For production deployment:
     "password": "yourpassword"
   }
   ```
-- `PATCH /users/:id` - Update user (password optional)
-- `DELETE /users/:id` - Delete user
+- `GET /users` - Get all users (requires JWT authentication)
+- `GET /users/:id` - Get user by ID (requires JWT authentication)
+- `PATCH /users/:id` - Update user (requires JWT authentication, password optional)
+- `DELETE /users/:id` - Delete user (requires JWT authentication)
+
+**Note**: All user endpoints except `POST /users` require a valid JWT token in the Authorization header:
+```
+Authorization: Bearer <your-jwt-token>
+```
 
 ## Security Features
 
 - **Password Hashing**: All passwords are hashed using bcrypt with 10 salt rounds
 - **Password Exclusion**: Passwords are never returned in API responses
-- **Authentication**: Login endpoint validates credentials and returns user data
+- **JWT Authentication**: Secure token-based authentication with 1-day expiration
+- **Protected Endpoints**: User management endpoints require valid JWT token
+- **Token Validation**: JWT tokens are validated on every protected request
 - **Validation**: Email uniqueness and required fields are enforced
 
 ## Notes

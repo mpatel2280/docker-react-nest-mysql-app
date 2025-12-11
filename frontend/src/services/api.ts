@@ -27,6 +27,10 @@ export interface User {
   updatedAt: string;
 }
 
+export interface LoginResponse extends User {
+  accessToken: string;
+}
+
 export interface CreateUserDto {
   email: string;
   name?: string;
@@ -53,9 +57,9 @@ export interface RegisterDto {
 // Auth API
 export const authApi = {
   login: async (data: LoginDto) => {
-    const response = await api.post<User>('/auth/login', data);
-    const user = response.data;
-    localStorage.setItem('token', 'demo-token');
+    const response = await api.post<LoginResponse>('/auth/login', data);
+    const { accessToken, ...user } = response.data;
+    localStorage.setItem('token', accessToken);
     localStorage.setItem('user', JSON.stringify(user));
     return user;
   },

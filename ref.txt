@@ -22,3 +22,20 @@ docker exec nestjs-backend-dev npm run test
 docker exec nestjs-backend-dev npm run test:e2e
 
 docker exec nestjs-backend-dev npm run test:cov
+
+# Run all unit tests
+docker exec nestjs-backend-dev npm run test
+
+# Run e2e tests
+docker exec nestjs-backend-dev npm run test:e2e
+
+# Run tests with coverage
+docker exec nestjs-backend-dev npm run test:cov
+
+# Watch mode for development
+docker exec nestjs-backend-dev npm run test:watch
+
+# JWT Authentication
+docker exec nestjs-backend-dev npm install @nestjs/jwt @nestjs/passport passport passport-jwt
+
+docker exec nestjs-backend-dev npm install -D @types/passport-jwt

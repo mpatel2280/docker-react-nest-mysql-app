@@ -1,16 +1,20 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { UnauthorizedException } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
 import { AuthService } from './auth.service';
 import { UserService } from '../user/user.service';
 import { LoginDto } from './dto/login.dto';
 
 describe('AuthService', () => {
   let authService: AuthService;
-  let userService: UserService;
 
   const mockUserService = {
     findByEmail: jest.fn(),
     validatePassword: jest.fn(),
+  };
+
+  const mockJwtService = {
+    sign: jest.fn(),
   };
 
   beforeEach(async () => {
@@ -21,11 +25,14 @@ describe('AuthService', () => {
           provide: UserService,
           useValue: mockUserService,
         },
+        {
+          provide: JwtService,
+          useValue: mockJwtService,
+        },
       ],
     }).compile();
 
     authService = module.get<AuthService>(AuthService);
-    userService = module.get<UserService>(UserService);
   });
 
   afterEach(() => {
@@ -47,9 +54,11 @@ describe('AuthService', () => {
       updatedAt: new Date(),
     };
 
-    it('should return user without password on successful login', async () => {
+    it('should return user with access token on successful login', async () => {
+      const mockAccessToken = 'mock.jwt.token';
       mockUserService.findByEmail.mockResolvedValue(mockUser);
       mockUserService.validatePassword.mockResolvedValue(true);
+      mockJwtService.sign.mockReturnValue(mockAccessToken);
 
       const result = await authService.login(loginDto);
 
@@ -59,13 +68,19 @@ describe('AuthService', () => {
         name: mockUser.name,
         createdAt: mockUser.createdAt,
         updatedAt: mockUser.updatedAt,
+        accessToken: mockAccessToken,
       });
       expect(result).not.toHaveProperty('password');
+      expect(result).toHaveProperty('accessToken');
       expect(mockUserService.findByEmail).toHaveBeenCalledWith(loginDto.email);
       expect(mockUserService.validatePassword).toHaveBeenCalledWith(
         loginDto.password,
         mockUser.password,
       );
+      expect(mockJwtService.sign).toHaveBeenCalledWith({
+        sub: mockUser.id,
+        email: mockUser.email,
+      });
     });
 
     it('should throw UnauthorizedException if user not found', async () => {

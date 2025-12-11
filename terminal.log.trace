@@ -1,6 +1,17 @@
 =======================================================================================================================
 2025-12-11 08:36:36
 =======================================================================================================================
+# JWT Authentication
+docker exec nestjs-backend-dev npm install @nestjs/jwt @nestjs/passport passport passport-jwt
+
+curl -X POST http://localhost:3000/auth/login -H "Content-Type: application/json" -d '{"email":"m1@test.com","password":"changeme"}'
+{"id":1,"email":"m1@test.com","name":"Manish","createdAt":"2025-12-10T17:25:47.000Z","updatedAt":"2025-12-10T17:25:47.000Z","accessToken":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsImVtYWlsIjoibTFAdGVzdC5jb20iLCJpYXQiOjE3NjU0MjgyODEsImV4cCI6MTc2NTUxNDY4MX0.dcPwZETQs3nQ3UG3KYdaqAW2pNi2ornGaJHxfI-KcQU"}u@u:~/code/docker-react-nest-mysql-app$ 
+u@u:~/code/docker-react-nest-mysql-app$ curl -X GET http://localhost:3000/users
+{"message":"Unauthorized","statusCode":401}
+u@u:~/code/docker-react-nest-mysql-app$ 
+u@u:~/code/docker-react-nest-mysql-app$ curl -X GET http://localhost:3000/users -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsImVtYWlsIjoibTFAdGVzdC5jb20iLCJpYXQiOjE3NjU0MjgyODEsImV4cCI6MTc2NTUxNDY4MX0.dcPwZETQs3nQ3UG3KYdaqAW2pNi2ornGaJHxfI-KcQU"
+[{"id":1,"email":"m1@test.com","name":"Manish","createdAt":"2025-12-10T17:25:47.000Z","updatedAt":"2025-12-10T17:25:47.000Z"},{"id":3,"email":"admin2@admin.cm","name":"Admin2","createdAt":"2025-12-10T17:27:29.009Z","updatedAt":"2025-12-10T17:27:29.009Z"},{"id":4,"email":"m2@test.com","name":"M2","createdAt":"2025-12-11T03:19:19.384Z","updatedAt":"2025-12-11T03:49:21.999Z"},{"id":5,"email":"newuser@test.com","name":"New User","createdAt":"2025-12-11T03:30:33.625Z","updatedAt":"2025-12-11T03:50:14.837Z"}]
+
 # test result
 docker exec nestjs-backend-dev npm run test:e2e
 
@@ -92,24 +103,24 @@ curl -X POST http://localhost:3000/auth/login -H "Content-Type: application/json
 [Nest] 162  - 12/11/2025, 3:23:16 AM     LOG [RoutesResolver] AuthController {/auth}: +1ms
 [Nest] 162  - 12/11/2025, 3:23:16 AM     LOG [RouterExplorer] Mapped {/auth/login, POST} route +0ms
 [Nest] 162  - 12/11/2025, 3:23:21 AM     LOG [NestApplication] Nest application successfully started +4128ms
-manish@manubantu:~/code/docker-react-nest-mysql-app$ 
-manish@manubantu:~/code/docker-react-nest-mysql-app$ curl -X POST http://localhost:3000/auth/login -H "Content-Type: application/json" -d '{"email":"test@example.com","password":"changeme"}'
-manish@manubantu:~/code/docker-react-nest-mysql-app$ curl -X POST http://localhost:3000/auth/login -H "Content-Type: application/json" -d '{"email":"m1@test.com","password":"123456"}'
-{"message":"Invalid credentials","error":"Unauthorized","statusCode":401}manish@manubantu:~/code/docker-react-nest-mysql-app$ 
-manish@manubantu:~/code/docker-react-nest-mysql-app$ curl -s http://localhost:3000/users
-[{"id":1,"email":"m1@test.com","name":"Manish","createdAt":"2025-12-10T17:25:47.000Z","updatedAt":"2025-12-10T17:25:47.000Z"},{"id":3,"email":"admin2@admin.cm","name":"Admin2","createdAt":"2025-12-10T17:27:29.009Z","updatedAt":"2025-12-10T17:27:29.009Z"},{"id":4,"email":"m2@test.com","name":"M2","createdAt":"2025-12-11T03:19:19.384Z","updatedAt":"2025-12-11T03:19:19.384Z"}]manish@manubantu:~/code/docker-react-nest-mysql-app$ 
-manish@manubantu:~/code/docker-react-nest-mysql-app$ curl -X POST http://localhost:3000/auth/login -H "Content-Type: application/json" -d '{"email":"m1@test.com","password":"changeme"}'
-{"id":1,"email":"m1@test.com","name":"Manish","createdAt":"2025-12-10T17:25:47.000Z","updatedAt":"2025-12-10T17:25:47.000Z"}manish@manubantu:~/code/docker-react-nest-mysql-app$ 
-manish@manubantu:~/code/docker-react-nest-mysql-app$ curl -X POST http://localhost:3000/users -H "Content-Type: application/json" -d '{"email":"newuser@test.com","name":"New User","password":"mypassword123"}'
-{"id":5,"email":"newuser@test.com","name":"New User","createdAt":"2025-12-11T03:30:33.625Z","updatedAt":"2025-12-11T03:30:33.625Z"}manish@manubantu:~/code/docker-react-nest-mysql-app$ 
-manish@manubantu:~/code/docker-react-nest-mysql-app$ curl -X POST http://localhost:3000/auth/login -H "Content-Type: application/json" -d '{"email":"newuser@test.com","password":"mypassword123"}'
-{"id":5,"email":"newuser@test.com","name":"New User","createdAt":"2025-12-11T03:30:33.625Z","updatedAt":"2025-12-11T03:30:33.625Z"}manish@manubantu:~/code/docker-react-nest-mysql-app$ 
-manish@manubantu:~/code/docker-react-nest-mysql-app$ curl -X POST http://localhost:3000/auth/login -H "Content-Type: application/json" -d '{"email":"newuser@test.com","password":"wrongpassword"}'
-{"message":"Invalid credentials","error":"Unauthorized","statusCode":401}manish@manubantu:~/code/docker-react-nest-mysql-app$ 
-manish@manubantu:~/code/docker-react-nest-mysql-app$ docker ps --filter name=react-frontend-dev
+u@u:~/code/docker-react-nest-mysql-app$ 
+u@u:~/code/docker-react-nest-mysql-app$ curl -X POST http://localhost:3000/auth/login -H "Content-Type: application/json" -d '{"email":"test@example.com","password":"changeme"}'
+u@u:~/code/docker-react-nest-mysql-app$ curl -X POST http://localhost:3000/auth/login -H "Content-Type: application/json" -d '{"email":"m1@test.com","password":"123456"}'
+{"message":"Invalid credentials","error":"Unauthorized","statusCode":401}u@u:~/code/docker-react-nest-mysql-app$ 
+u@u:~/code/docker-react-nest-mysql-app$ curl -s http://localhost:3000/users
+[{"id":1,"email":"m1@test.com","name":"Manish","createdAt":"2025-12-10T17:25:47.000Z","updatedAt":"2025-12-10T17:25:47.000Z"},{"id":3,"email":"admin2@admin.cm","name":"Admin2","createdAt":"2025-12-10T17:27:29.009Z","updatedAt":"2025-12-10T17:27:29.009Z"},{"id":4,"email":"m2@test.com","name":"M2","createdAt":"2025-12-11T03:19:19.384Z","updatedAt":"2025-12-11T03:19:19.384Z"}]u@u:~/code/docker-react-nest-mysql-app$ 
+u@u:~/code/docker-react-nest-mysql-app$ curl -X POST http://localhost:3000/auth/login -H "Content-Type: application/json" -d '{"email":"m1@test.com","password":"changeme"}'
+{"id":1,"email":"m1@test.com","name":"Manish","createdAt":"2025-12-10T17:25:47.000Z","updatedAt":"2025-12-10T17:25:47.000Z"}u@u:~/code/docker-react-nest-mysql-app$ 
+u@u:~/code/docker-react-nest-mysql-app$ curl -X POST http://localhost:3000/users -H "Content-Type: application/json" -d '{"email":"newuser@test.com","name":"New User","password":"mypassword123"}'
+{"id":5,"email":"newuser@test.com","name":"New User","createdAt":"2025-12-11T03:30:33.625Z","updatedAt":"2025-12-11T03:30:33.625Z"}u@u:~/code/docker-react-nest-mysql-app$ 
+u@u:~/code/docker-react-nest-mysql-app$ curl -X POST http://localhost:3000/auth/login -H "Content-Type: application/json" -d '{"email":"newuser@test.com","password":"mypassword123"}'
+{"id":5,"email":"newuser@test.com","name":"New User","createdAt":"2025-12-11T03:30:33.625Z","updatedAt":"2025-12-11T03:30:33.625Z"}u@u:~/code/docker-react-nest-mysql-app$ 
+u@u:~/code/docker-react-nest-mysql-app$ curl -X POST http://localhost:3000/auth/login -H "Content-Type: application/json" -d '{"email":"newuser@test.com","password":"wrongpassword"}'
+{"message":"Invalid credentials","error":"Unauthorized","statusCode":401}u@u:~/code/docker-react-nest-mysql-app$ 
+u@u:~/code/docker-react-nest-mysql-app$ docker ps --filter name=react-frontend-dev
 CONTAINER ID   IMAGE                                  COMMAND                  CREATED          STATUS          PORTS                                       NAMES
 01640547d297   docker-react-nest-mysql-app-frontend   "docker-entrypoint.s…"   13 minutes ago   Up 12 minutes   0.0.0.0:5173->5173/tcp, :::5173->5173/tcp   react-frontend-dev
-manish@manubantu:~/code/docker-react-nest-mysql-app$ 
+u@u:~/code/docker-react-nest-mysql-app$ 
 
 # password column added 
 

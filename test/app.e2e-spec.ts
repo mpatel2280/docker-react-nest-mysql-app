@@ -31,6 +31,7 @@ describe('App (e2e)', () => {
 
   describe('Authentication', () => {
     let createdUserId: number;
+    let accessToken: string;
 
     it('/users (POST) - should create a new user with password', async () => {
       const createUserDto = {
@@ -52,7 +53,7 @@ describe('App (e2e)', () => {
       createdUserId = response.body.id;
     });
 
-    it('/auth/login (POST) - should login with valid credentials', async () => {
+    it('/auth/login (POST) - should login with valid credentials and return JWT token', async () => {
       const loginDto = {
         email: 'e2etest@example.com',
         password: 'testpassword123',
@@ -65,7 +66,11 @@ describe('App (e2e)', () => {
 
       expect(response.body).toHaveProperty('id');
       expect(response.body.email).toBe(loginDto.email);
+      expect(response.body).toHaveProperty('accessToken');
       expect(response.body).not.toHaveProperty('password');
+
+      // Store token for subsequent tests
+      accessToken = response.body.accessToken;
     });
 
     it('/auth/login (POST) - should fail with invalid password', async () => {
@@ -92,9 +97,10 @@ describe('App (e2e)', () => {
         .expect(401);
     });
 
-    it('/users (GET) - should return all users without passwords', async () => {
+    it('/users (GET) - should return all users without passwords when authenticated', async () => {
       const response = await request(app.getHttpServer())
         .get('/users')
+        .set('Authorization', `Bearer ${accessToken}`)
         .expect(200);
 
       expect(Array.isArray(response.body)).toBe(true);
@@ -104,16 +110,23 @@ describe('App (e2e)', () => {
       });
     });
 
-    it('/users/:id (GET) - should return a user by id without password', async () => {
+    it('/users (GET) - should return 401 when not authenticated', async () => {
+      await request(app.getHttpServer())
+        .get('/users')
+        .expect(401);
+    });
+
+    it('/users/:id (GET) - should return a user by id without password when authenticated', async () => {
       const response = await request(app.getHttpServer())
         .get(`/users/${createdUserId}`)
+        .set('Authorization', `Bearer ${accessToken}`)
         .expect(200);
 
       expect(response.body.id).toBe(createdUserId);
       expect(response.body).not.toHaveProperty('password');
     });
 
-    it('/users/:id (PATCH) - should update user with new password', async () => {
+    it('/users/:id (PATCH) - should update user with new password when authenticated', async () => {
       const updateUserDto = {
         name: 'Updated E2E User',
         password: 'newpassword456',
@@ -121,32 +134,59 @@ describe('App (e2e)', () => {
 
       const response = await request(app.getHttpServer())
         .patch(`/users/${createdUserId}`)
+        .set('Authorization', `Bearer ${accessToken}`)
         .send(updateUserDto)
         .expect(200);
 
       expect(response.body.name).toBe(updateUserDto.name);
       expect(response.body).not.toHaveProperty('password');
 
-      // Verify login with new password
+      // Verify login with new password and get new token
       const loginDto = {
         email: 'e2etest@example.com',
         password: 'newpassword456',
       };
 
-      await request(app.getHttpServer())
+      const loginResponse = await request(app.getHttpServer())
         .post('/auth/login')
         .send(loginDto)
         .expect(201);
+
+      // Update token for subsequent tests
+      accessToken = loginResponse.body.accessToken;
     });
 
-    it('/users/:id (DELETE) - should delete a user', async () => {
+    it('/users/:id (DELETE) - should delete a user when authenticated', async () => {
+      // First, create another user to use for authentication after deletion
+      const tempUser = {
+        email: 'temp@example.com',
+        name: 'Temp User',
+        password: 'temppassword123',
+      };
+
+      await request(app.getHttpServer())
+        .post('/users')
+        .send(tempUser)
+        .expect(201);
+
+      // Login with temp user to get a valid token
+      const tempLoginResponse = await request(app.getHttpServer())
+        .post('/auth/login')
+        .send({ email: tempUser.email, password: tempUser.password })
+        .expect(201);
+
+      const tempToken = tempLoginResponse.body.accessToken;
+
+      // Delete the original test user
       await request(app.getHttpServer())
         .delete(`/users/${createdUserId}`)
+        .set('Authorization', `Bearer ${accessToken}`)
         .expect(200);
 
-      // Verify user is deleted - should return null or empty object
+      // Verify user is deleted using the temp user's token
       const response = await request(app.getHttpServer())
         .get(`/users/${createdUserId}`)
+        .set('Authorization', `Bearer ${tempToken}`)
         .expect(200);
 
       // Prisma returns null when user not found
