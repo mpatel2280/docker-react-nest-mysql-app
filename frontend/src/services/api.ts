@@ -54,6 +54,23 @@ export interface RegisterDto {
   name?: string;
 }
 
+export interface PaginationParams {
+  page?: number;
+  limit?: number;
+  cursor?: number;
+}
+
+export interface PaginatedResponse<T> {
+  data: T[];
+  meta: {
+    total: number;
+    page: number;
+    limit: number;
+    hasMore: boolean;
+    nextCursor: number | null;
+  };
+}
+
 // Auth API
 export const authApi = {
   login: async (data: LoginDto) => {
@@ -86,8 +103,15 @@ export const authApi = {
 
 // User API
 export const userApi = {
-  getAll: async () => {
-    const response = await api.get<User[]>('/users');
+  getAll: async (params?: PaginationParams) => {
+    const queryParams = new URLSearchParams();
+    if (params?.page) queryParams.append('page', params.page.toString());
+    if (params?.limit) queryParams.append('limit', params.limit.toString());
+    if (params?.cursor) queryParams.append('cursor', params.cursor.toString());
+
+    const queryString = queryParams.toString();
+    const url = queryString ? `/users?${queryString}` : '/users';
+    const response = await api.get<PaginatedResponse<User>>(url);
     return response.data;
   },
   getById: async (id: number) => {
