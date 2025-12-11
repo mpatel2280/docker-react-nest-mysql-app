@@ -1,7 +1,74 @@
 =======================================================================================================================
 2025-12-11 08:36:36
 =======================================================================================================================
+# test result
+docker exec nestjs-backend-dev npm run test:e2e
 
+> react-nest-app@0.0.1 test:e2e
+> jest --config ./test/jest-e2e.json
+
+PASS test/app.e2e-spec.ts
+  App (e2e)
+    AppController
+      ✓ / (GET) (37 ms)
+    Authentication
+      ✓ /users (POST) - should create a new user with password (327 ms)
+      ✓ /auth/login (POST) - should login with valid credentials (90 ms)
+      ✓ /auth/login (POST) - should fail with invalid password (82 ms)
+      ✓ /auth/login (POST) - should fail with non-existent email (5 ms)
+      ✓ /users (GET) - should return all users without passwords (9 ms)
+      ✓ /users/:id (GET) - should return a user by id without password (6 ms)
+      ✓ /users/:id (PATCH) - should update user with new password (334 ms)
+      ✓ /users/:id (DELETE) - should delete a user (97 ms)
+
+Test Suites: 1 passed, 1 total
+Tests:       9 passed, 9 total
+Snapshots:   0 total
+Time:        2.452 s, estimated 4 s
+Ran all test suites.
+
+
+docker exec nestjs-backend-dev npm run test:cov
+
+> react-nest-app@0.0.1 test:cov
+> jest --coverage
+
+PASS src/app.controller.spec.ts
+PASS src/user/user.service.spec.ts
+PASS src/auth/auth.service.spec.ts
+PASS src/auth/auth.controller.spec.ts
+---------------------|---------|----------|---------|---------|-------------------
+File                 | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s 
+---------------------|---------|----------|---------|---------|-------------------
+All files            |   52.17 |     52.5 |    62.5 |   51.61 |                   
+ src                 |   46.42 |       50 |      75 |    40.9 |                   
+  app.controller.ts  |     100 |       75 |     100 |     100 | 6                 
+  app.module.ts      |       0 |      100 |     100 |       0 | 1-13              
+  app.service.ts     |     100 |      100 |     100 |     100 |                   
+  main.ts            |       0 |        0 |       0 |       0 | 1-13              
+ src/auth            |   76.66 |    81.25 |     100 |   79.16 |                   
+  auth.controller.ts |     100 |       75 |     100 |     100 | 7-10              
+  auth.module.ts     |       0 |      100 |     100 |       0 | 1-11              
+  auth.service.ts    |     100 |     87.5 |     100 |     100 | 7                 
+ src/auth/dto        |     100 |      100 |     100 |     100 |                   
+  login.dto.ts       |     100 |      100 |     100 |     100 |                   
+ src/prisma          |   41.66 |      100 |       0 |    37.5 |                   
+  prisma.module.ts   |       0 |      100 |     100 |       0 | 1-9               
+  prisma.service.ts  |   71.42 |      100 |       0 |      60 | 10-14             
+ src/user            |   42.85 |    27.77 |   57.14 |   44.44 |                   
+  user.controller.ts |       0 |        0 |       0 |       0 | 1-44              
+  user.module.ts     |       0 |      100 |     100 |       0 | 1-10              
+  user.service.ts    |     100 |    83.33 |     100 |     100 | 9                 
+ src/user/dto        |       0 |      100 |     100 |       0 |                   
+  create-user.dto.ts |       0 |      100 |     100 |       0 | 1                 
+  update-user.dto.ts |       0 |      100 |     100 |       0 | 1                 
+---------------------|---------|----------|---------|---------|-------------------
+
+Test Suites: 4 passed, 4 total
+Tests:       15 passed, 15 total
+Snapshots:   0 total
+Time:        6.819 s
+Ran all test suites.
 
 # auth module updated
 curl -X POST http://localhost:3000/auth/login -H "Content-Type: application/json" -d '{"email":"m1@test.com","password":"changeme"}'

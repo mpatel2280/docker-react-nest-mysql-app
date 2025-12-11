@@ -16,3 +16,9 @@ docker exec nestjs-backend-dev npm install bcrypt @types/bcrypt
 docker exec nestjs-backend-dev npx prisma migrate dev --name add_password_to_user
 
 docker exec nestjs-backend-dev npx prisma migrate dev --create-only --name add_password_to_user
+
+docker exec nestjs-backend-dev npm run test
+
+docker exec nestjs-backend-dev npm run test:e2e
+
+docker exec nestjs-backend-dev npm run test:cov
