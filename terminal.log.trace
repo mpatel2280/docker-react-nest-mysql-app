@@ -2,6 +2,50 @@
 2025-12-11 08:36:36
 =======================================================================================================================
 
+
+# auth module updated
+curl -X POST http://localhost:3000/auth/login -H "Content-Type: application/json" -d '{"email":"m1@test.com","password":"changeme"}'
+[3:23:03 AM] File change detected. Starting incremental compilation...
+
+[3:23:03 AM] Found 0 errors. Watching for file changes.
+
+[Nest] 162  - 12/11/2025, 3:23:16 AM     LOG [NestFactory] Starting Nest application...
+[Nest] 162  - 12/11/2025, 3:23:16 AM     LOG [InstanceLoader] PrismaModule dependencies initialized +17ms
+[Nest] 162  - 12/11/2025, 3:23:16 AM     LOG [InstanceLoader] AppModule dependencies initialized +1ms
+[Nest] 162  - 12/11/2025, 3:23:16 AM     LOG [InstanceLoader] AuthModule dependencies initialized +0ms
+[Nest] 162  - 12/11/2025, 3:23:16 AM     LOG [InstanceLoader] UserModule dependencies initialized +0ms
+[Nest] 162  - 12/11/2025, 3:23:16 AM     LOG [RoutesResolver] AppController {/}: +3ms
+[Nest] 162  - 12/11/2025, 3:23:16 AM     LOG [RouterExplorer] Mapped {/, GET} route +4ms
+[Nest] 162  - 12/11/2025, 3:23:16 AM     LOG [RoutesResolver] UserController {/users}: +0ms
+[Nest] 162  - 12/11/2025, 3:23:16 AM     LOG [RouterExplorer] Mapped {/users, POST} route +1ms
+[Nest] 162  - 12/11/2025, 3:23:16 AM     LOG [RouterExplorer] Mapped {/users, GET} route +2ms
+[Nest] 162  - 12/11/2025, 3:23:16 AM     LOG [RouterExplorer] Mapped {/users/:id, GET} route +2ms
+[Nest] 162  - 12/11/2025, 3:23:16 AM     LOG [RouterExplorer] Mapped {/users/:id, PATCH} route +1ms
+[Nest] 162  - 12/11/2025, 3:23:16 AM     LOG [RouterExplorer] Mapped {/users/:id, DELETE} route +1ms
+[Nest] 162  - 12/11/2025, 3:23:16 AM     LOG [RoutesResolver] AuthController {/auth}: +1ms
+[Nest] 162  - 12/11/2025, 3:23:16 AM     LOG [RouterExplorer] Mapped {/auth/login, POST} route +0ms
+[Nest] 162  - 12/11/2025, 3:23:21 AM     LOG [NestApplication] Nest application successfully started +4128ms
+manish@manubantu:~/code/docker-react-nest-mysql-app$ 
+manish@manubantu:~/code/docker-react-nest-mysql-app$ curl -X POST http://localhost:3000/auth/login -H "Content-Type: application/json" -d '{"email":"test@example.com","password":"changeme"}'
+manish@manubantu:~/code/docker-react-nest-mysql-app$ curl -X POST http://localhost:3000/auth/login -H "Content-Type: application/json" -d '{"email":"m1@test.com","password":"123456"}'
+{"message":"Invalid credentials","error":"Unauthorized","statusCode":401}manish@manubantu:~/code/docker-react-nest-mysql-app$ 
+manish@manubantu:~/code/docker-react-nest-mysql-app$ curl -s http://localhost:3000/users
+[{"id":1,"email":"m1@test.com","name":"Manish","createdAt":"2025-12-10T17:25:47.000Z","updatedAt":"2025-12-10T17:25:47.000Z"},{"id":3,"email":"admin2@admin.cm","name":"Admin2","createdAt":"2025-12-10T17:27:29.009Z","updatedAt":"2025-12-10T17:27:29.009Z"},{"id":4,"email":"m2@test.com","name":"M2","createdAt":"2025-12-11T03:19:19.384Z","updatedAt":"2025-12-11T03:19:19.384Z"}]manish@manubantu:~/code/docker-react-nest-mysql-app$ 
+manish@manubantu:~/code/docker-react-nest-mysql-app$ curl -X POST http://localhost:3000/auth/login -H "Content-Type: application/json" -d '{"email":"m1@test.com","password":"changeme"}'
+{"id":1,"email":"m1@test.com","name":"Manish","createdAt":"2025-12-10T17:25:47.000Z","updatedAt":"2025-12-10T17:25:47.000Z"}manish@manubantu:~/code/docker-react-nest-mysql-app$ 
+manish@manubantu:~/code/docker-react-nest-mysql-app$ curl -X POST http://localhost:3000/users -H "Content-Type: application/json" -d '{"email":"newuser@test.com","name":"New User","password":"mypassword123"}'
+{"id":5,"email":"newuser@test.com","name":"New User","createdAt":"2025-12-11T03:30:33.625Z","updatedAt":"2025-12-11T03:30:33.625Z"}manish@manubantu:~/code/docker-react-nest-mysql-app$ 
+manish@manubantu:~/code/docker-react-nest-mysql-app$ curl -X POST http://localhost:3000/auth/login -H "Content-Type: application/json" -d '{"email":"newuser@test.com","password":"mypassword123"}'
+{"id":5,"email":"newuser@test.com","name":"New User","createdAt":"2025-12-11T03:30:33.625Z","updatedAt":"2025-12-11T03:30:33.625Z"}manish@manubantu:~/code/docker-react-nest-mysql-app$ 
+manish@manubantu:~/code/docker-react-nest-mysql-app$ curl -X POST http://localhost:3000/auth/login -H "Content-Type: application/json" -d '{"email":"newuser@test.com","password":"wrongpassword"}'
+{"message":"Invalid credentials","error":"Unauthorized","statusCode":401}manish@manubantu:~/code/docker-react-nest-mysql-app$ 
+manish@manubantu:~/code/docker-react-nest-mysql-app$ docker ps --filter name=react-frontend-dev
+CONTAINER ID   IMAGE                                  COMMAND                  CREATED          STATUS          PORTS                                       NAMES
+01640547d297   docker-react-nest-mysql-app-frontend   "docker-entrypoint.s…"   13 minutes ago   Up 12 minutes   0.0.0.0:5173->5173/tcp, :::5173->5173/tcp   react-frontend-dev
+manish@manubantu:~/code/docker-react-nest-mysql-app$ 
+
+# password column added 
+
 u@u:~/code/docker-react-nest-mysql-app$ docker exec nestjs-backend-dev npx prisma migrate dev --name add_password_to_user
 Error response from daemon: No such container: nestjs-backend-dev
 u@u:~/code/docker-react-nest-mysql-app$ 

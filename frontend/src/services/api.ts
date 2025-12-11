@@ -50,18 +50,14 @@ export interface RegisterDto {
   name?: string;
 }
 
-// Auth API (placeholder - needs backend implementation)
+// Auth API
 export const authApi = {
   login: async (data: LoginDto) => {
-    // For now, just simulate login by checking if user exists
-    const response = await api.get<User[]>('/users');
-    const user = response.data.find((u) => u.email === data.email);
-    if (user) {
-      localStorage.setItem('token', 'demo-token');
-      localStorage.setItem('user', JSON.stringify(user));
-      return user;
-    }
-    throw new Error('Invalid credentials');
+    const response = await api.post<User>('/auth/login', data);
+    const user = response.data;
+    localStorage.setItem('token', 'demo-token');
+    localStorage.setItem('user', JSON.stringify(user));
+    return user;
   },
   register: async (data: RegisterDto) => {
     const response = await api.post<User>('/users', {
