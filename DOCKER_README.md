@@ -284,7 +284,14 @@ For production deployment:
     "password": "yourpassword"
   }
   ```
-- `GET /users` - Get all users (requires JWT authentication)
+- `GET /users` - Get paginated users (requires JWT authentication)
+  - Query parameters:
+    - `page` (optional): Page number (default: 1)
+    - `limit` (optional): Number of users per page (default: 10)
+    - `cursor` (optional): Cursor-based pagination using user ID
+  - Response includes:
+    - `data`: Array of users
+    - `meta`: Pagination metadata (total, page, limit, hasMore, nextCursor)
 - `GET /users/:id` - Get user by ID (requires JWT authentication)
 - `PATCH /users/:id` - Update user (requires JWT authentication, password optional)
 - `DELETE /users/:id` - Delete user (requires JWT authentication)
@@ -294,14 +301,22 @@ For production deployment:
 Authorization: Bearer <your-jwt-token>
 ```
 
-## Security Features
+## Features
 
+### Security
 - **Password Hashing**: All passwords are hashed using bcrypt with 10 salt rounds
 - **Password Exclusion**: Passwords are never returned in API responses
 - **JWT Authentication**: Secure token-based authentication with 1-day expiration
 - **Protected Endpoints**: User management endpoints require valid JWT token
 - **Token Validation**: JWT tokens are validated on every protected request
 - **Validation**: Email uniqueness and required fields are enforced
+
+### Performance
+- **Pagination**: Backend supports pagination with configurable page size
+- **Page Navigation**: Frontend implements traditional pagination with page controls
+- **Efficient Loading**: Users are loaded page by page (10 per page by default)
+- **Optimized Queries**: Database queries use skip/take for efficient data retrieval
+- **Smart Page Display**: Shows current page, adjacent pages, and first/last pages with ellipsis
 
 ## Notes
 

@@ -6,7 +6,7 @@ import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UserService {
-  constructor(private prisma: PrismaService) {}
+  constructor(private readonly prisma: PrismaService) {}
 
   async create(createUserDto: CreateUserDto) {
     const hashedPassword = await bcrypt.hash(createUserDto.password, 10);
@@ -25,16 +25,45 @@ export class UserService {
     });
   }
 
-  findAll() {
-    return this.prisma.user.findMany({
-      select: {
-        id: true,
-        email: true,
-        name: true,
-        createdAt: true,
-        updatedAt: true,
+  async findAll(page: number = 1, limit: number = 10, cursor?: number) {
+    const skip = cursor ? 1 : (page - 1) * limit;
+    const take = limit;
+
+    const [users, total] = await Promise.all([
+      this.prisma.user.findMany({
+        ...(cursor && { cursor: { id: cursor } }),
+        skip,
+        take,
+        orderBy: {
+          id: 'asc',
+        },
+        select: {
+          id: true,
+          email: true,
+          name: true,
+          createdAt: true,
+          updatedAt: true,
+        },
+      }),
+      this.prisma.user.count(),
+    ]);
+
+    const hasMore = cursor
+      ? users.length === take
+      : page * limit < total;
+
+    const nextCursor = users.length > 0 ? users.at(-1)?.id ?? null : null;
+
+    return {
+      data: users,
+      meta: {
+        total,
+        page,
+        limit,
+        hasMore,
+        nextCursor,
       },
-    });
+    };
   }
 
   findOne(id: number) {

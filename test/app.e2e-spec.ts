@@ -32,12 +32,14 @@ describe('App (e2e)', () => {
   describe('Authentication', () => {
     let createdUserId: number;
     let accessToken: string;
+    const testEmail = `e2etest-${Date.now()}@example.com`;
+    const testPassword = 'testpassword123';
 
     it('/users (POST) - should create a new user with password', async () => {
       const createUserDto = {
-        email: 'e2etest@example.com',
+        email: testEmail,
         name: 'E2E Test User',
-        password: 'testpassword123',
+        password: testPassword,
       };
 
       const response = await request(app.getHttpServer())
@@ -55,8 +57,8 @@ describe('App (e2e)', () => {
 
     it('/auth/login (POST) - should login with valid credentials and return JWT token', async () => {
       const loginDto = {
-        email: 'e2etest@example.com',
-        password: 'testpassword123',
+        email: testEmail,
+        password: testPassword,
       };
 
       const response = await request(app.getHttpServer())
@@ -97,15 +99,22 @@ describe('App (e2e)', () => {
         .expect(401);
     });
 
-    it('/users (GET) - should return all users without passwords when authenticated', async () => {
+    it('/users (GET) - should return paginated users without passwords when authenticated', async () => {
       const response = await request(app.getHttpServer())
-        .get('/users')
+        .get('/users?page=1&limit=10')
         .set('Authorization', `Bearer ${accessToken}`)
         .expect(200);
 
-      expect(Array.isArray(response.body)).toBe(true);
-      expect(response.body.length).toBeGreaterThan(0);
-      response.body.forEach((user: any) => {
+      expect(response.body).toHaveProperty('data');
+      expect(response.body).toHaveProperty('meta');
+      expect(Array.isArray(response.body.data)).toBe(true);
+      expect(response.body.data.length).toBeGreaterThan(0);
+      expect(response.body.meta).toHaveProperty('total');
+      expect(response.body.meta).toHaveProperty('page');
+      expect(response.body.meta).toHaveProperty('limit');
+      expect(response.body.meta).toHaveProperty('hasMore');
+      expect(response.body.meta).toHaveProperty('nextCursor');
+      response.body.data.forEach((user: any) => {
         expect(user).not.toHaveProperty('password');
       });
     });
@@ -159,7 +168,7 @@ describe('App (e2e)', () => {
     it('/users/:id (DELETE) - should delete a user when authenticated', async () => {
       // First, create another user to use for authentication after deletion
       const tempUser = {
-        email: 'temp@example.com',
+        email: `temp-${Date.now()}@example.com`,
         name: 'Temp User',
         password: 'temppassword123',
       };

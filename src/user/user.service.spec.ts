@@ -17,6 +17,7 @@ describe('UserService', () => {
       findUnique: jest.fn(),
       update: jest.fn(),
       delete: jest.fn(),
+      count: jest.fn(),
     },
   };
 
@@ -80,7 +81,7 @@ describe('UserService', () => {
   });
 
   describe('findAll', () => {
-    it('should return all users without passwords', async () => {
+    it('should return paginated users without passwords', async () => {
       const mockUsers = [
         {
           id: 1,
@@ -99,10 +100,16 @@ describe('UserService', () => {
       ];
 
       mockPrismaService.user.findMany.mockResolvedValue(mockUsers);
+      mockPrismaService.user.count.mockResolvedValue(20);
 
-      const result = await userService.findAll();
+      const result = await userService.findAll(1, 10);
 
       expect(mockPrismaService.user.findMany).toHaveBeenCalledWith({
+        skip: 0,
+        take: 10,
+        orderBy: {
+          id: 'asc',
+        },
         select: {
           id: true,
           email: true,
@@ -111,7 +118,52 @@ describe('UserService', () => {
           updatedAt: true,
         },
       });
-      expect(result).toEqual(mockUsers);
+      expect(mockPrismaService.user.count).toHaveBeenCalled();
+      expect(result).toEqual({
+        data: mockUsers,
+        meta: {
+          total: 20,
+          page: 1,
+          limit: 10,
+          hasMore: true,
+          nextCursor: 2,
+        },
+      });
+    });
+
+    it('should return paginated users with cursor', async () => {
+      const mockUsers = [
+        {
+          id: 3,
+          email: 'user3@example.com',
+          name: 'User 3',
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        },
+      ];
+
+      mockPrismaService.user.findMany.mockResolvedValue(mockUsers);
+      mockPrismaService.user.count.mockResolvedValue(20);
+
+      const result = await userService.findAll(2, 10, 2);
+
+      expect(mockPrismaService.user.findMany).toHaveBeenCalledWith({
+        cursor: { id: 2 },
+        skip: 1,
+        take: 10,
+        orderBy: {
+          id: 'asc',
+        },
+        select: {
+          id: true,
+          email: true,
+          name: true,
+          createdAt: true,
+          updatedAt: true,
+        },
+      });
+      expect(result.data).toEqual(mockUsers);
+      expect(result.meta.nextCursor).toBe(3);
     });
   });
 
