@@ -309,6 +309,9 @@ Authorization: Bearer <your-jwt-token>
 - **JWT Authentication**: Secure token-based authentication with 1-day expiration
 - **Protected Endpoints**: User management endpoints require valid JWT token
 - **Token Validation**: JWT tokens are validated on every protected request
+- **Persistent Sessions**: User remains logged in across page refreshes until browser closes or manual logout
+- **Auto Logout**: Automatically logs out user on 401 errors (expired/invalid tokens)
+- **Token Storage**: JWT tokens stored in localStorage for session persistence
 - **Validation**: Email uniqueness and required fields are enforced
 
 ### Performance
