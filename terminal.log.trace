@@ -9,7 +9,8 @@ curl -X POST http://localhost:3000/auth/login -H "Content-Type: application/json
 u@u:~/code/docker-react-nest-mysql-app$ curl -X GET http://localhost:3000/users
 {"message":"Unauthorized","statusCode":401}
 u@u:~/code/docker-react-nest-mysql-app$ 
-u@u:~/code/docker-react-nest-mysql-app$ curl -X GET http://localhost:3000/users -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsImVtYWlsIjoibTFAdGVzdC5jb20iLCJpYXQiOjE3NjU0MjgyODEsImV4cCI6MTc2NTUxNDY4MX0.dcPwZETQs3nQ3UG3KYdaqAW2pNi2ornGaJHxfI-KcQU"
+u@u:~/code/docker-react-nest-mysql-app$ 
+curl -X GET http://localhost:3000/users -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsImVtYWlsIjoibTFAdGVzdC5jb20iLCJpYXQiOjE3NjU0MjgyODEsImV4cCI6MTc2NTUxNDY4MX0.dcPwZETQs3nQ3UG3KYdaqAW2pNi2ornGaJHxfI-KcQU"
 [{"id":1,"email":"m1@test.com","name":"Manish","createdAt":"2025-12-10T17:25:47.000Z","updatedAt":"2025-12-10T17:25:47.000Z"},{"id":3,"email":"admin2@admin.cm","name":"Admin2","createdAt":"2025-12-10T17:27:29.009Z","updatedAt":"2025-12-10T17:27:29.009Z"},{"id":4,"email":"m2@test.com","name":"M2","createdAt":"2025-12-11T03:19:19.384Z","updatedAt":"2025-12-11T03:49:21.999Z"},{"id":5,"email":"newuser@test.com","name":"New User","createdAt":"2025-12-11T03:30:33.625Z","updatedAt":"2025-12-11T03:50:14.837Z"}]
 
 # test result
