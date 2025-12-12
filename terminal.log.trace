@@ -1,4 +1,269 @@
 =======================================================================================================================
+2025-12-12
+=======================================================================================================================
+#Kafka and 
+
+manish@manubantu:~/code/docker-react-nest-mysql-app$ docker exec nestjs-backend-dev npm install kafkajs mongoose @nestjs/mongoose
+
+added 20 packages, changed 19 packages, and audited 745 packages in 30s
+
+141 packages are looking for funding
+  run `npm fund` for details
+manish@manubantu:~/code/docker-react-nest-mysql-app$ 
+manish@manubantu:~/code/docker-react-nest-mysql-app$ docker-compose -f docker-compose.dev.yml down
+WARN[0000] /home/manish/code/docker-react-nest-mysql-app/docker-compose.dev.yml: `version` is obsolete 
+[+] Running 4/4
+ ✔ Container react-frontend-dev                     Removed                                                                                                            1.3s 
+ ✔ Container nestjs-backend-dev                     Removed                                                                                                            1.5s 
+ ✔ Container mysql-db-dev                           Removed                                                                                                            2.7s 
+ ✔ Network docker-react-nest-mysql-app_app-network  Removed                                                                                                            0.8s 
+manish@manubantu:~/code/docker-react-nest-mysql-app$ 
+manish@manubantu:~/code/docker-react-nest-mysql-app$ docker-compose -f docker-compose.dev.yml up -d
+WARN[0000] /home/manish/code/docker-react-nest-mysql-app/docker-compose.dev.yml: `version` is obsolete 
+[+] Running 24/22
+ ✔ kafka Pulled                                                                                                                                                      363.7s 
+ ✔ mongodb Pulled                                                                                                                                                    118.6s 
+ ✔ zookeeper Pulled                                                                                                                                                  362.2s 
+                                                                                                                                                                            
+                                                                                                                                                                            
+                                                                                                                                                                            
+                                                                                                                                                                            
+                                                                                                                                                                            
+                                                                                                                                                                            
+                                                                                                                                                                            
+                                                                                                                                                                            
+                                                                                                                                                                            
+                                                                                                                                                                            
+                                                                                                                                                                            
+                                                                                                                                                                            
+                                                                                                                                                                            
+                                                                                                                                                                            
+                                                                                                                                                                            
+                                                                                                                                                                            
+                                                                                                                                                                            
+                                                                                                                                                                            
+                                                                                                                                                                            
+[+] Running 8/8
+ ✔ Network docker-react-nest-mysql-app_app-network        Created                                                                                                      2.2s 
+ ✔ Volume "docker-react-nest-mysql-app_mongodb_data_dev"  Created                                                                                                      0.6s 
+ ✘ Container mysql-db-dev                                 Error                                                                                                      299.6s 
+ ✘ Container mongodb-dev                                  Error                                                                                                      322.1s 
+ ✔ Container zookeeper-dev                                Healthy                                                                                                    269.2s 
+ ✔ Container kafka-dev                                    Healthy                                                                                                    331.6s 
+ ✔ Container nestjs-backend-dev                           Created                                                                                                    152.5s 
+ ✔ Container react-frontend-dev                           Created                                                                                                     31.9s 
+dependency failed to start: container mysql-db-dev is unhealthy
+manish@manubantu:~/code/docker-react-nest-mysql-app$ ^C
+manish@manubantu:~/code/docker-react-nest-mysql-app$ 
+manish@manubantu:~/code/docker-react-nest-mysql-app$ docker logs mysql-db-dev 2>&1 | tail -50
+2025-12-12 03:38:39+00:00 [Note] [Entrypoint]: Entrypoint script for MySQL Server 8.0.36-1.el8 started.
+2025-12-12 03:38:48+00:00 [Note] [Entrypoint]: Switching to dedicated user 'mysql'
+2025-12-12 03:38:49+00:00 [Note] [Entrypoint]: Entrypoint script for MySQL Server 8.0.36-1.el8 started.
+'/var/lib/mysql/mysql.sock' -> '/var/run/mysqld/mysqld.sock'
+2025-12-12T03:38:50.369209Z 0 [Warning] [MY-011068] [Server] The syntax '--skip-host-cache' is deprecated and will be removed in a future release. Please use SET GLOBAL host_cache_size=0 instead.
+2025-12-12T03:38:50.427830Z 0 [System] [MY-010116] [Server] /usr/sbin/mysqld (mysqld 8.0.36) starting as process 1
+2025-12-12T03:38:52.976675Z 1 [System] [MY-013576] [InnoDB] InnoDB initialization has started.
+2025-12-12T03:39:19.561646Z 1 [System] [MY-013577] [InnoDB] InnoDB initialization has ended.
+2025-12-12T03:39:48.806276Z 0 [Warning] [MY-010068] [Server] CA certificate ca.pem is self signed.
+2025-12-12T03:39:48.806307Z 0 [System] [MY-013602] [Server] Channel mysql_main configured to support TLS. Encrypted connections are now supported for this channel.
+2025-12-12T03:39:49.747219Z 0 [Warning] [MY-011810] [Server] Insecure configuration for --pid-file: Location '/var/run/mysqld' in the path is accessible to all OS users. Consider choosing a different directory.
+2025-12-12T03:39:54.590075Z 0 [System] [MY-011323] [Server] X Plugin ready for connections. Bind-address: '::' port: 33060, socket: /var/run/mysqld/mysqlx.sock
+2025-12-12T03:39:54.590120Z 0 [System] [MY-010931] [Server] /usr/sbin/mysqld: ready for connections. Version: '8.0.36'  socket: '/var/run/mysqld/mysqld.sock'  port: 3306  MySQL Community Server - GPL.
+manish@manubantu:~/code/docker-react-nest-mysql-app$ 
+manish@manubantu:~/code/docker-react-nest-mysql-app$ docker logs mongodb-dev 2>&1 | tail -50
+{"t":{"$date":"2025-12-12T03:53:00.041+00:00"},"s":"I",  "c":"NETWORK",  "id":22944,   "ctx":"conn360","msg":"Connection ended","attr":{"remote":"127.0.0.1:51384","isLoadBalanced":false,"uuid":{"uuid":{"$uuid":"bcdb1fea-2f7c-4322-996c-7750e5394568"}},"connectionId":360,"connectionCount":4}}
+{"t":{"$date":"2025-12-12T03:53:00.041+00:00"},"s":"I",  "c":"NETWORK",  "id":22944,   "ctx":"conn358","msg":"Connection ended","attr":{"remote":"127.0.0.1:51378","isLoadBalanced":false,"uuid":{"uuid":{"$uuid":"1dfc4ebf-c6a5-4ed3-beb6-54384ab399ee"}},"connectionId":358,"connectionCount":3}}
+{"t":{"$date":"2025-12-12T03:53:00.041+00:00"},"s":"I",  "c":"NETWORK",  "id":22944,   "ctx":"conn359","msg":"Connection ended","attr":{"remote":"127.0.0.1:51380","isLoadBalanced":false,"uuid":{"uuid":{"$uuid":"ff0a86bd-5d7b-4e55-9fff-fe73d41c9b71"}},"connectionId":359,"connectionCount":2}}
+{"t":{"$date":"2025-12-12T03:53:00.041+00:00"},"s":"I",  "c":"NETWORK",  "id":22944,   "ctx":"conn357","msg":"Connection ended","attr":{"remote":"127.0.0.1:51370","isLoadBalanced":false,"uuid":{"uuid":{"$uuid":"6691aa78-2272-41dc-856c-8ccd5523aabd"}},"connectionId":357,"connectionCount":1}}
+{"t":{"$date":"2025-12-12T03:53:00.041+00:00"},"s":"I",  "c":"NETWORK",  "id":22944,   "ctx":"conn356","msg":"Connection ended","attr":{"remote":"127.0.0.1:51358","isLoadBalanced":false,"uuid":{"uuid":{"$uuid":"3cef2901-af2c-4236-adb6-d93a463c8b98"}},"connectionId":356,"connectionCount":0}}
+{"t":{"$date":"2025-12-12T03:53:10.507+00:00"},"s":"I",  "c":"NETWORK",  "id":22943,   "ctx":"listener","msg":"Connection accepted","attr":{"remote":"127.0.0.1:53910","isLoadBalanced":false,"uuid":{"uuid":{"$uuid":"26357d2b-ff4a-44fe-9f9c-6e8aaa233c60"}},"connectionId":361,"connectionCount":1}}
+{"t":{"$date":"2025-12-12T03:53:10.512+00:00"},"s":"I",  "c":"NETWORK",  "id":51800,   "ctx":"conn361","msg":"client metadata","attr":{"remote":"127.0.0.1:53910","client":"conn361","negotiatedCompressors":[],"doc":{"application":{"name":"mongosh 2.5.9"},"driver":{"name":"nodejs|mongosh","version":"6.19.0|2.5.9"},"platform":"Node.js v20.19.5, LE","os":{"name":"linux","architecture":"x64","version":"3.10.0-327.22.2.el7.x86_64","type":"Linux"},"env":{"container":{"runtime":"docker"}}}}}
+{"t":{"$date":"2025-12-12T03:53:10.512+00:00"},"s":"I",  "c":"ACCESS",   "id":10483900,"ctx":"conn361","msg":"Connection not authenticating","attr":{"client":"127.0.0.1:53910","doc":{"application":{"name":"mongosh 2.5.9"},"driver":{"name":"nodejs|mongosh","version":"6.19.0|2.5.9"},"platform":"Node.js v20.19.5, LE","os":{"name":"linux","architecture":"x64","version":"3.10.0-327.22.2.el7.x86_64","type":"Linux"},"env":{"container":{"runtime":"docker"}}}}}
+{"t":{"$date":"2025-12-12T03:53:10.591+00:00"},"s":"I",  "c":"NETWORK",  "id":22943,   "ctx":"listener","msg":"Connection accepted","attr":{"remote":"127.0.0.1:53924","isLoadBalanced":false,"uuid":{"uuid":{"$uuid":"3d9952b5-15f2-4868-aaf4-b104f540c477"}},"connectionId":362,"connectionCount":2}}
+{"t":{"$date":"2025-12-12T03:53:10.591+00:00"},"s":"I",  "c":"NETWORK",  "id":22943,   "ctx":"listener","msg":"Connection accepted","attr":{"remote":"127.0.0.1:53938","isLoadBalanced":false,"uuid":{"uuid":{"$uuid":"6c89b0a9-2cb5-4284-b0fe-8ecc8e4449ae"}},"connectionId":363,"connectionCount":3}}
+{"t":{"$date":"2025-12-12T03:53:10.594+00:00"},"s":"I",  "c":"NETWORK",  "id":51800,   "ctx":"conn362","msg":"client metadata","attr":{"remote":"127.0.0.1:53924","client":"conn362","negotiatedCompressors":[],"doc":{"application":{"name":"mongosh 2.5.9"},"driver":{"name":"nodejs|mongosh","version":"6.19.0|2.5.9"},"platform":"Node.js v20.19.5, LE","os":{"name":"linux","architecture":"x64","version":"3.10.0-327.22.2.el7.x86_64","type":"Linux"},"env":{"container":{"runtime":"docker"}}}}}
+{"t":{"$date":"2025-12-12T03:53:10.594+00:00"},"s":"I",  "c":"ACCESS",   "id":10483900,"ctx":"conn362","msg":"Connection not authenticating","attr":{"client":"127.0.0.1:53924","doc":{"application":{"name":"mongosh 2.5.9"},"driver":{"name":"nodejs|mongosh","version":"6.19.0|2.5.9"},"platform":"Node.js v20.19.5, LE","os":{"name":"linux","architecture":"x64","version":"3.10.0-327.22.2.el7.x86_64","type":"Linux"},"env":{"container":{"runtime":"docker"}}}}}
+{"t":{"$date":"2025-12-12T03:53:10.596+00:00"},"s":"I",  "c":"NETWORK",  "id":51800,   "ctx":"conn363","msg":"client metadata","attr":{"remote":"127.0.0.1:53938","client":"conn363","negotiatedCompressors":[],"doc":{"application":{"name":"mongosh 2.5.9"},"driver":{"name":"nodejs|mongosh","version":"6.19.0|2.5.9"},"platform":"Node.js v20.19.5, LE","os":{"name":"linux","architecture":"x64","version":"3.10.0-327.22.2.el7.x86_64","type":"Linux"},"env":{"container":{"runtime":"docker"}}}}}
+{"t":{"$date":"2025-12-12T03:53:10.596+00:00"},"s":"I",  "c":"ACCESS",   "id":10483900,"ctx":"conn363","msg":"Connection not authenticating","attr":{"client":"127.0.0.1:53938","doc":{"application":{"name":"mongosh 2.5.9"},"driver":{"name":"nodejs|mongosh","version":"6.19.0|2.5.9"},"platform":"Node.js v20.19.5, LE","os":{"name":"linux","architecture":"x64","version":"3.10.0-327.22.2.el7.x86_64","type":"Linux"},"env":{"container":{"runtime":"docker"}}}}}
+{"t":{"$date":"2025-12-12T03:53:10.598+00:00"},"s":"I",  "c":"NETWORK",  "id":6788700, "ctx":"conn362","msg":"Received first command on ingress connection since session start or auth handshake","attr":{"elapsedMillis":4}}
+{"t":{"$date":"2025-12-12T03:53:10.599+00:00"},"s":"I",  "c":"NETWORK",  "id":22943,   "ctx":"listener","msg":"Connection accepted","attr":{"remote":"127.0.0.1:53952","isLoadBalanced":false,"uuid":{"uuid":{"$uuid":"76924dd7-288c-4599-a59f-7461b5c17ec0"}},"connectionId":364,"connectionCount":4}}
+{"t":{"$date":"2025-12-12T03:53:10.603+00:00"},"s":"I",  "c":"NETWORK",  "id":22943,   "ctx":"listener","msg":"Connection accepted","attr":{"remote":"127.0.0.1:53960","isLoadBalanced":false,"uuid":{"uuid":{"$uuid":"1884fc9f-ca15-4873-ae69-1ad8ee0ebc42"}},"connectionId":365,"connectionCount":5}}
+{"t":{"$date":"2025-12-12T03:53:10.603+00:00"},"s":"I",  "c":"NETWORK",  "id":51800,   "ctx":"conn364","msg":"client metadata","attr":{"remote":"127.0.0.1:53952","client":"conn364","negotiatedCompressors":[],"doc":{"application":{"name":"mongosh 2.5.9"},"driver":{"name":"nodejs|mongosh","version":"6.19.0|2.5.9"},"platform":"Node.js v20.19.5, LE","os":{"name":"linux","architecture":"x64","version":"3.10.0-327.22.2.el7.x86_64","type":"Linux"},"env":{"container":{"runtime":"docker"}}}}}
+{"t":{"$date":"2025-12-12T03:53:10.603+00:00"},"s":"I",  "c":"ACCESS",   "id":10483900,"ctx":"conn364","msg":"Connection not authenticating","attr":{"client":"127.0.0.1:53952","doc":{"application":{"name":"mongosh 2.5.9"},"driver":{"name":"nodejs|mongosh","version":"6.19.0|2.5.9"},"platform":"Node.js v20.19.5, LE","os":{"name":"linux","architecture":"x64","version":"3.10.0-327.22.2.el7.x86_64","type":"Linux"},"env":{"container":{"runtime":"docker"}}}}}
+{"t":{"$date":"2025-12-12T03:53:10.607+00:00"},"s":"I",  "c":"NETWORK",  "id":51800,   "ctx":"conn365","msg":"client metadata","attr":{"remote":"127.0.0.1:53960","client":"conn365","negotiatedCompressors":[],"doc":{"application":{"name":"mongosh 2.5.9"},"driver":{"name":"nodejs|mongosh","version":"6.19.0|2.5.9"},"platform":"Node.js v20.19.5, LE","os":{"name":"linux","architecture":"x64","version":"3.10.0-327.22.2.el7.x86_64","type":"Linux"},"env":{"container":{"runtime":"docker"}}}}}
+{"t":{"$date":"2025-12-12T03:53:10.607+00:00"},"s":"I",  "c":"ACCESS",   "id":10483900,"ctx":"conn365","msg":"Connection not authenticating","attr":{"client":"127.0.0.1:53960","doc":{"application":{"name":"mongosh 2.5.9"},"driver":{"name":"nodejs|mongosh","version":"6.19.0|2.5.9"},"platform":"Node.js v20.19.5, LE","os":{"name":"linux","architecture":"x64","version":"3.10.0-327.22.2.el7.x86_64","type":"Linux"},"env":{"container":{"runtime":"docker"}}}}}
+{"t":{"$date":"2025-12-12T03:53:10.614+00:00"},"s":"I",  "c":"NETWORK",  "id":6788700, "ctx":"conn365","msg":"Received first command on ingress connection since session start or auth handshake","attr":{"elapsedMillis":6}}
+{"t":{"$date":"2025-12-12T03:53:10.636+00:00"},"s":"I",  "c":"NETWORK",  "id":22944,   "ctx":"conn364","msg":"Connection ended","attr":{"remote":"127.0.0.1:53952","isLoadBalanced":false,"uuid":{"uuid":{"$uuid":"76924dd7-288c-4599-a59f-7461b5c17ec0"}},"connectionId":364,"connectionCount":4}}
+{"t":{"$date":"2025-12-12T03:53:10.636+00:00"},"s":"I",  "c":"NETWORK",  "id":22944,   "ctx":"conn365","msg":"Connection ended","attr":{"remote":"127.0.0.1:53960","isLoadBalanced":false,"uuid":{"uuid":{"$uuid":"1884fc9f-ca15-4873-ae69-1ad8ee0ebc42"}},"connectionId":365,"connectionCount":3}}
+{"t":{"$date":"2025-12-12T03:53:10.636+00:00"},"s":"I",  "c":"NETWORK",  "id":22944,   "ctx":"conn362","msg":"Connection ended","attr":{"remote":"127.0.0.1:53924","isLoadBalanced":false,"uuid":{"uuid":{"$uuid":"3d9952b5-15f2-4868-aaf4-b104f540c477"}},"connectionId":362,"connectionCount":2}}
+{"t":{"$date":"2025-12-12T03:53:10.636+00:00"},"s":"I",  "c":"NETWORK",  "id":22944,   "ctx":"conn363","msg":"Connection ended","attr":{"remote":"127.0.0.1:53938","isLoadBalanced":false,"uuid":{"uuid":{"$uuid":"6c89b0a9-2cb5-4284-b0fe-8ecc8e4449ae"}},"connectionId":363,"connectionCount":1}}
+{"t":{"$date":"2025-12-12T03:53:10.636+00:00"},"s":"I",  "c":"NETWORK",  "id":22944,   "ctx":"conn361","msg":"Connection ended","attr":{"remote":"127.0.0.1:53910","isLoadBalanced":false,"uuid":{"uuid":{"$uuid":"26357d2b-ff4a-44fe-9f9c-6e8aaa233c60"}},"connectionId":361,"connectionCount":0}}
+{"t":{"$date":"2025-12-12T03:53:21.248+00:00"},"s":"I",  "c":"NETWORK",  "id":22943,   "ctx":"listener","msg":"Connection accepted","attr":{"remote":"127.0.0.1:55912","isLoadBalanced":false,"uuid":{"uuid":{"$uuid":"674253ae-4d7d-4959-870b-f485166adc3d"}},"connectionId":366,"connectionCount":1}}
+{"t":{"$date":"2025-12-12T03:53:21.253+00:00"},"s":"I",  "c":"NETWORK",  "id":51800,   "ctx":"conn366","msg":"client metadata","attr":{"remote":"127.0.0.1:55912","client":"conn366","negotiatedCompressors":[],"doc":{"application":{"name":"mongosh 2.5.9"},"driver":{"name":"nodejs|mongosh","version":"6.19.0|2.5.9"},"platform":"Node.js v20.19.5, LE","os":{"name":"linux","architecture":"x64","version":"3.10.0-327.22.2.el7.x86_64","type":"Linux"},"env":{"container":{"runtime":"docker"}}}}}
+{"t":{"$date":"2025-12-12T03:53:21.253+00:00"},"s":"I",  "c":"ACCESS",   "id":10483900,"ctx":"conn366","msg":"Connection not authenticating","attr":{"client":"127.0.0.1:55912","doc":{"application":{"name":"mongosh 2.5.9"},"driver":{"name":"nodejs|mongosh","version":"6.19.0|2.5.9"},"platform":"Node.js v20.19.5, LE","os":{"name":"linux","architecture":"x64","version":"3.10.0-327.22.2.el7.x86_64","type":"Linux"},"env":{"container":{"runtime":"docker"}}}}}
+{"t":{"$date":"2025-12-12T03:53:21.348+00:00"},"s":"I",  "c":"NETWORK",  "id":22943,   "ctx":"listener","msg":"Connection accepted","attr":{"remote":"127.0.0.1:55926","isLoadBalanced":false,"uuid":{"uuid":{"$uuid":"9465259d-2bd5-42cd-9808-9469402c23fe"}},"connectionId":367,"connectionCount":2}}
+{"t":{"$date":"2025-12-12T03:53:21.348+00:00"},"s":"I",  "c":"NETWORK",  "id":22943,   "ctx":"listener","msg":"Connection accepted","attr":{"remote":"127.0.0.1:55936","isLoadBalanced":false,"uuid":{"uuid":{"$uuid":"0928819d-570f-4d7b-8a5e-e6dd7bf4af73"}},"connectionId":368,"connectionCount":3}}
+{"t":{"$date":"2025-12-12T03:53:21.352+00:00"},"s":"I",  "c":"NETWORK",  "id":51800,   "ctx":"conn367","msg":"client metadata","attr":{"remote":"127.0.0.1:55926","client":"conn367","negotiatedCompressors":[],"doc":{"application":{"name":"mongosh 2.5.9"},"driver":{"name":"nodejs|mongosh","version":"6.19.0|2.5.9"},"platform":"Node.js v20.19.5, LE","os":{"name":"linux","architecture":"x64","version":"3.10.0-327.22.2.el7.x86_64","type":"Linux"},"env":{"container":{"runtime":"docker"}}}}}
+{"t":{"$date":"2025-12-12T03:53:21.352+00:00"},"s":"I",  "c":"ACCESS",   "id":10483900,"ctx":"conn367","msg":"Connection not authenticating","attr":{"client":"127.0.0.1:55926","doc":{"application":{"name":"mongosh 2.5.9"},"driver":{"name":"nodejs|mongosh","version":"6.19.0|2.5.9"},"platform":"Node.js v20.19.5, LE","os":{"name":"linux","architecture":"x64","version":"3.10.0-327.22.2.el7.x86_64","type":"Linux"},"env":{"container":{"runtime":"docker"}}}}}
+{"t":{"$date":"2025-12-12T03:53:21.353+00:00"},"s":"I",  "c":"NETWORK",  "id":51800,   "ctx":"conn368","msg":"client metadata","attr":{"remote":"127.0.0.1:55936","client":"conn368","negotiatedCompressors":[],"doc":{"application":{"name":"mongosh 2.5.9"},"driver":{"name":"nodejs|mongosh","version":"6.19.0|2.5.9"},"platform":"Node.js v20.19.5, LE","os":{"name":"linux","architecture":"x64","version":"3.10.0-327.22.2.el7.x86_64","type":"Linux"},"env":{"container":{"runtime":"docker"}}}}}
+{"t":{"$date":"2025-12-12T03:53:21.353+00:00"},"s":"I",  "c":"ACCESS",   "id":10483900,"ctx":"conn368","msg":"Connection not authenticating","attr":{"client":"127.0.0.1:55936","doc":{"application":{"name":"mongosh 2.5.9"},"driver":{"name":"nodejs|mongosh","version":"6.19.0|2.5.9"},"platform":"Node.js v20.19.5, LE","os":{"name":"linux","architecture":"x64","version":"3.10.0-327.22.2.el7.x86_64","type":"Linux"},"env":{"container":{"runtime":"docker"}}}}}
+{"t":{"$date":"2025-12-12T03:53:21.358+00:00"},"s":"I",  "c":"NETWORK",  "id":6788700, "ctx":"conn367","msg":"Received first command on ingress connection since session start or auth handshake","attr":{"elapsedMillis":5}}
+{"t":{"$date":"2025-12-12T03:53:21.359+00:00"},"s":"I",  "c":"NETWORK",  "id":22943,   "ctx":"listener","msg":"Connection accepted","attr":{"remote":"127.0.0.1:55938","isLoadBalanced":false,"uuid":{"uuid":{"$uuid":"a804a9ad-d953-4ccf-8639-195cb36f334a"}},"connectionId":369,"connectionCount":4}}
+{"t":{"$date":"2025-12-12T03:53:21.365+00:00"},"s":"I",  "c":"NETWORK",  "id":22943,   "ctx":"listener","msg":"Connection accepted","attr":{"remote":"127.0.0.1:55950","isLoadBalanced":false,"uuid":{"uuid":{"$uuid":"f5460bdb-1025-4a42-9d48-f827e7cfb86a"}},"connectionId":370,"connectionCount":5}}
+{"t":{"$date":"2025-12-12T03:53:21.366+00:00"},"s":"I",  "c":"NETWORK",  "id":51800,   "ctx":"conn369","msg":"client metadata","attr":{"remote":"127.0.0.1:55938","client":"conn369","negotiatedCompressors":[],"doc":{"application":{"name":"mongosh 2.5.9"},"driver":{"name":"nodejs|mongosh","version":"6.19.0|2.5.9"},"platform":"Node.js v20.19.5, LE","os":{"name":"linux","architecture":"x64","version":"3.10.0-327.22.2.el7.x86_64","type":"Linux"},"env":{"container":{"runtime":"docker"}}}}}
+{"t":{"$date":"2025-12-12T03:53:21.366+00:00"},"s":"I",  "c":"ACCESS",   "id":10483900,"ctx":"conn369","msg":"Connection not authenticating","attr":{"client":"127.0.0.1:55938","doc":{"application":{"name":"mongosh 2.5.9"},"driver":{"name":"nodejs|mongosh","version":"6.19.0|2.5.9"},"platform":"Node.js v20.19.5, LE","os":{"name":"linux","architecture":"x64","version":"3.10.0-327.22.2.el7.x86_64","type":"Linux"},"env":{"container":{"runtime":"docker"}}}}}
+{"t":{"$date":"2025-12-12T03:53:21.374+00:00"},"s":"I",  "c":"NETWORK",  "id":51800,   "ctx":"conn370","msg":"client metadata","attr":{"remote":"127.0.0.1:55950","client":"conn370","negotiatedCompressors":[],"doc":{"application":{"name":"mongosh 2.5.9"},"driver":{"name":"nodejs|mongosh","version":"6.19.0|2.5.9"},"platform":"Node.js v20.19.5, LE","os":{"name":"linux","architecture":"x64","version":"3.10.0-327.22.2.el7.x86_64","type":"Linux"},"env":{"container":{"runtime":"docker"}}}}}
+{"t":{"$date":"2025-12-12T03:53:21.374+00:00"},"s":"I",  "c":"ACCESS",   "id":10483900,"ctx":"conn370","msg":"Connection not authenticating","attr":{"client":"127.0.0.1:55950","doc":{"application":{"name":"mongosh 2.5.9"},"driver":{"name":"nodejs|mongosh","version":"6.19.0|2.5.9"},"platform":"Node.js v20.19.5, LE","os":{"name":"linux","architecture":"x64","version":"3.10.0-327.22.2.el7.x86_64","type":"Linux"},"env":{"container":{"runtime":"docker"}}}}}
+{"t":{"$date":"2025-12-12T03:53:21.382+00:00"},"s":"I",  "c":"NETWORK",  "id":6788700, "ctx":"conn370","msg":"Received first command on ingress connection since session start or auth handshake","attr":{"elapsedMillis":8}}
+{"t":{"$date":"2025-12-12T03:53:21.404+00:00"},"s":"I",  "c":"NETWORK",  "id":22944,   "ctx":"conn369","msg":"Connection ended","attr":{"remote":"127.0.0.1:55938","isLoadBalanced":false,"uuid":{"uuid":{"$uuid":"a804a9ad-d953-4ccf-8639-195cb36f334a"}},"connectionId":369,"connectionCount":4}}
+{"t":{"$date":"2025-12-12T03:53:21.404+00:00"},"s":"I",  "c":"NETWORK",  "id":22944,   "ctx":"conn370","msg":"Connection ended","attr":{"remote":"127.0.0.1:55950","isLoadBalanced":false,"uuid":{"uuid":{"$uuid":"f5460bdb-1025-4a42-9d48-f827e7cfb86a"}},"connectionId":370,"connectionCount":3}}
+{"t":{"$date":"2025-12-12T03:53:21.404+00:00"},"s":"I",  "c":"NETWORK",  "id":22944,   "ctx":"conn368","msg":"Connection ended","attr":{"remote":"127.0.0.1:55936","isLoadBalanced":false,"uuid":{"uuid":{"$uuid":"0928819d-570f-4d7b-8a5e-e6dd7bf4af73"}},"connectionId":368,"connectionCount":2}}
+{"t":{"$date":"2025-12-12T03:53:21.404+00:00"},"s":"I",  "c":"NETWORK",  "id":22944,   "ctx":"conn367","msg":"Connection ended","attr":{"remote":"127.0.0.1:55926","isLoadBalanced":false,"uuid":{"uuid":{"$uuid":"9465259d-2bd5-42cd-9808-9469402c23fe"}},"connectionId":367,"connectionCount":1}}
+{"t":{"$date":"2025-12-12T03:53:21.404+00:00"},"s":"I",  "c":"NETWORK",  "id":22944,   "ctx":"conn366","msg":"Connection ended","attr":{"remote":"127.0.0.1:55912","isLoadBalanced":false,"uuid":{"uuid":{"$uuid":"674253ae-4d7d-4959-870b-f485166adc3d"}},"connectionId":366,"connectionCount":0}}
+{"t":{"$date":"2025-12-12T03:53:28.065+00:00"},"s":"I",  "c":"WTCHKPT",  "id":22430,   "ctx":"Checkpointer","msg":"WiredTiger message","attr":{"message":{"ts_sec":1765511608,"ts_usec":65327,"thread":"1:0x74de3b82f640","session_name":"WT_SESSION.checkpoint","category":"WT_VERB_CHECKPOINT_PROGRESS","category_id":6,"verbose_level":"DEBUG_1","verbose_level_id":1,"msg":"saving checkpoint snapshot min: 16, snapshot max: 16 snapshot count: 0, oldest timestamp: (0, 0) , meta checkpoint timestamp: (0, 0) base write gen: 7"}}}
+manish@manubantu:~/code/docker-react-nest-mysql-app$ 
+manish@manubantu:~/code/docker-react-nest-mysql-app$ docker ps -a --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}"
+NAMES                                           STATUS                      PORTS
+react-frontend-dev                              Created                     
+nestjs-backend-dev                              Created                     
+kafka-dev                                       Up 14 minutes (healthy)     0.0.0.0:9092-9093->9092-9093/tcp, :::9092-9093->9092-9093/tcp
+zookeeper-dev                                   Up 15 minutes (healthy)     2888/tcp, 0.0.0.0:2181->2181/tcp, :::2181->2181/tcp, 3888/tcp
+mysql-db-dev                                    Up 15 minutes (healthy)     33060/tcp, 0.0.0.0:3307->3306/tcp, [::]:3307->3306/tcp
+mongodb-dev                                     Up 15 minutes (healthy)     0.0.0.0:27017->27017/tcp, :::27017->27017/tcp
+mysql_db                                        Up 17 hours                 33060/tcp, 0.0.0.0:3309->3306/tcp, [::]:3309->3306/tcp
+docker-ror-pgsql-graphql-web-run-dfd094b631cc   Exited (1) 13 days ago      
+docker-ror-pgsql-graphql-db-1                   Exited (255) 11 days ago    0.0.0.0:5433->5432/tcp, [::]:5433->5432/tcp
+mysql                                           Exited (255) 3 months ago   33060/tcp, 0.0.0.0:3307->3306/tcp, [::]:3307->3306/tcp
+simplebank-api-1                                Exited (0) 4 months ago     
+simplebank-redis-1                              Exited (0) 4 months ago     
+simplebank-postgres-1                           Exited (0) 4 months ago     
+postgres16-for-go                               Exited (255) 3 months ago   0.0.0.0:5433->5432/tcp, [::]:5433->5432/tcp
+django_docker_app-web-run-56dd40af6f34          Exited (0) 6 months ago     
+django_docker_app-web-run-184aeb98c53d          Exited (0) 6 months ago     
+manish@manubantu:~/code/docker-react-nest-mysql-app$ 
+manish@manubantu:~/code/docker-react-nest-mysql-app$ docker start nestjs-backend-dev react-frontend-dev
+nestjs-backend-dev
+react-frontend-dev
+manish@manubantu:~/code/docker-react-nest-mysql-app$ 
+manish@manubantu:~/code/docker-react-nest-mysql-app$ sleep 5 && docker ps --format "table {{.Names}}\t{{.Status}}"
+NAMES                STATUS
+react-frontend-dev   Up 15 seconds
+nestjs-backend-dev   Up 16 seconds
+kafka-dev            Up 15 minutes (healthy)
+zookeeper-dev        Up 15 minutes (healthy)
+mysql-db-dev         Up 15 minutes (healthy)
+mongodb-dev          Up 15 minutes (healthy)
+mysql_db             Up 17 hours
+manish@manubantu:~/code/docker-react-nest-mysql-app$ 
+manish@manubantu:~/code/docker-react-nest-mysql-app$ sleep 5 && docker logs nestjs-backend-dev --tail 30
+         ~~~~
+
+src/user/user.controller.ts:97:7 - error TS18047: 'user' is possibly 'null'.
+
+97       user.email,
+         ~~~~
+
+src/user/user.controller.ts:98:7 - error TS18047: 'user' is possibly 'null'.
+
+98       user.name,
+         ~~~~
+
+src/user/user.controller.ts:98:7 - error TS2345: Argument of type 'string | null' is not assignable to parameter of type 'string | undefined'.
+  Type 'null' is not assignable to type 'string | undefined'.
+
+98       user.name,
+         ~~~~~~~~~
+
+src/user/user.controller.ts:99:16 - error TS18047: 'user' is possibly 'null'.
+
+99       { email: user.email, name: user.name },
+                  ~~~~
+
+src/user/user.controller.ts:99:34 - error TS18047: 'user' is possibly 'null'.
+
+99       { email: user.email, name: user.name },
+                                    ~~~~
+
+[3:54:17 AM] Found 19 errors. Watching for file changes.
+
+manish@manubantu:~/code/docker-react-nest-mysql-app$ 
+manish@manubantu:~/code/docker-react-nest-mysql-app$ sleep 5 && docker logs nestjs-backend-dev --tail 20
+
+Error: Cannot find module '@nestjs/mongoose'
+Require stack:
+- /app/dist/app.module.js
+- /app/dist/main.js
+    at Module._resolveFilename (node:internal/modules/cjs/loader:1207:15)
+    at Module._load (node:internal/modules/cjs/loader:1038:27)
+    at Module.require (node:internal/modules/cjs/loader:1289:19)
+    at require (node:internal/modules/helpers:182:18)
+    at Object.<anonymous> (/app/src/app.module.ts:2:1)
+    at Module._compile (node:internal/modules/cjs/loader:1521:14)
+    at Module._extensions..js (node:internal/modules/cjs/loader:1623:10)
+    at Module.load (node:internal/modules/cjs/loader:1266:32)
+    at Module._load (node:internal/modules/cjs/loader:1091:12)
+    at Module.require (node:internal/modules/cjs/loader:1289:19) {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [ '/app/dist/app.module.js', '/app/dist/main.js' ]
+}
+
+Node.js v20.19.6
+manish@manubantu:~/code/docker-react-nest-mysql-app$ 
+manish@manubantu:~/code/docker-react-nest-mysql-app$ docker-compose -f docker-compose.dev.yml up -d --build backend
+WARN[0000] /home/manish/code/docker-react-nest-mysql-app/docker-compose.dev.yml: `version` is obsolete 
+[+] Building 258.2s (13/13) FINISHED                                                                                                                         docker:default
+ => [backend internal] load build definition from Dockerfile.dev                                                                                                       2.1s
+ => => transferring dockerfile: 493B                                                                                                                                   0.0s
+ => [backend internal] load metadata for docker.io/library/node:20-alpine                                                                                              6.2s
+ => [backend auth] library/node:pull token for registry-1.docker.io                                                                                                    0.0s
+ => [backend internal] load .dockerignore                                                                                                                              1.6s
+ => => transferring context: 568B                                                                                                                                      0.0s
+ => [backend 1/7] FROM docker.io/library/node:20-alpine@sha256:643e7036aa985317ebfee460005e322aa550c6b6883000d01daefb58689a58e2                                        0.0s
+ => [backend internal] load build context                                                                                                                              2.6s
+ => => transferring context: 4.92kB                                                                                                                                    0.4s
+ => CACHED [backend 2/7] RUN apk add --no-cache openssl libc6-compat                                                                                                   0.0s
+ => CACHED [backend 3/7] WORKDIR /app                                                                                                                                  0.0s
+ => [backend 4/7] COPY package*.json ./                                                                                                                                8.2s
+ => [backend 5/7] COPY prisma ./prisma/                                                                                                                                7.2s
+ => [backend 6/7] RUN npm install                                                                                                                                    105.6s
+ => [backend 7/7] RUN npx prisma generate                                                                                                                             14.8s 
+ => [backend] exporting to image                                                                                                                                      93.1s 
+ => => exporting layers                                                                                                                                               90.1s 
+ => => writing image sha256:df44aa001f58cac08f50fcbc29890520434fbaff0806930eac258249872ad7e0                                                                           0.4s 
+ => => naming to docker.io/library/docker-react-nest-mysql-app-backend                                                                                                 0.7s 
+[+] Running 5/5                                                                                                                                                             
+ ✔ Container zookeeper-dev       Healthy                                                                                                                              23.2s 
+ ✔ Container mysql-db-dev        Healthy                                                                                                                              23.7s 
+ ✔ Container mongodb-dev         Healthy                                                                                                                              23.7s 
+ ✔ Container kafka-dev           Healthy                                                                                                                              23.7s 
+ ✔ Container nestjs-backend-dev  Started                                                                                                                              29.9s 
+manish@manubantu:~/code/docker-react-nest-mysql-app$ 
+manish@manubantu:~/code/docker-react-nest-mysql-app$ sleep 5 && docker logs nestjs-backend-dev --tail 30
+Environment variables loaded from .env
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": MySQL database "react_nest_app" at "mysql:3306"
+
+3 migrations found in prisma/migrations
+
+
+No pending migrations to apply.
+
+> react-nest-app@0.0.1 start:dev
+> nest start --watch
+
+manish@manubantu:~/code/docker-react-nest-mysql-app$ 
+manish@manubantu:~/code/docker-react-nest-mysql-app$ docker ps --format "table {{.Names}}\t{{.Status}}"
+NAMES                STATUS
+nestjs-backend-dev   Up 19 seconds
+react-frontend-dev   Up 6 minutes
+kafka-dev            Up 21 minutes (healthy)
+zookeeper-dev        Up 22 minutes (healthy)
+mysql-db-dev         Up 22 minutes (healthy)
+mongodb-dev          Up 22 minutes (healthy)
+mysql_db             Up 17 hours
+manish@manubantu:~/code/docker-react-nest-mysql-app$
+
+=======================================================================================================================
 2025-12-11 08:36:36
 =======================================================================================================================
 # JWT Authentication
