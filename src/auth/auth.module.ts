@@ -5,11 +5,14 @@ import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
 import { UserModule } from '../user/user.module';
 import { JwtStrategy } from './strategies/jwt.strategy';
+import { AuthActivityService } from './auth-activity.service';
+import { KafkaModule } from '../kafka/kafka.module';
 
 @Module({
   imports: [
     UserModule,
     PassportModule,
+    KafkaModule,
     JwtModule.register({
       secret: process.env.JWT_SECRET || 'thequickbrownfoxjumpsoverthelazydog',
       signOptions: {
@@ -18,7 +21,7 @@ import { JwtStrategy } from './strategies/jwt.strategy';
     }),
   ],
   controllers: [AuthController],
-  providers: [AuthService, JwtStrategy],
+  providers: [AuthService, JwtStrategy, AuthActivityService],
   exports: [AuthService],
 })
 export class AuthModule {}

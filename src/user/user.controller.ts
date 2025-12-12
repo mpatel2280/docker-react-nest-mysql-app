@@ -14,14 +14,28 @@ import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { UserActivityService } from './user-activity.service';
 
 @Controller('users')
 export class UserController {
-  constructor(private readonly userService: UserService) {}
+  constructor(
+    private readonly userService: UserService,
+    private readonly userActivityService: UserActivityService,
+  ) {}
 
   @Post()
-  create(@Body() createUserDto: CreateUserDto) {
-    return this.userService.create(createUserDto);
+  async create(@Body() createUserDto: CreateUserDto) {
+    const user = await this.userService.create(createUserDto);
+
+    // Log activity
+    await this.userActivityService.logUserCreated(
+      user.id,
+      user.email,
+      user.name ?? undefined,
+      { email: user.email, name: user.name ?? undefined },
+    );
+
+    return user;
   }
 
   @UseGuards(JwtAuthGuard)
@@ -46,17 +60,52 @@ export class UserController {
 
   @UseGuards(JwtAuthGuard)
   @Patch(':id')
-  update(
+  async update(
     @Param('id', ParseIntPipe) id: number,
     @Body() updateUserDto: UpdateUserDto,
   ) {
-    return this.userService.update(id, updateUserDto);
+    // Get old data before update
+    const oldUser = await this.userService.findOne(id);
+    if (!oldUser) {
+      throw new Error('User not found');
+    }
+
+    // Update user
+    const updatedUser = await this.userService.update(id, updateUserDto);
+
+    // Log activity
+    await this.userActivityService.logUserUpdated(
+      updatedUser.id,
+      updatedUser.email,
+      updatedUser.name ?? undefined,
+      { email: oldUser.email, name: oldUser.name ?? undefined },
+      { email: updatedUser.email, name: updatedUser.name ?? undefined },
+    );
+
+    return updatedUser;
   }
 
   @UseGuards(JwtAuthGuard)
   @Delete(':id')
-  remove(@Param('id', ParseIntPipe) id: number) {
-    return this.userService.remove(id);
+  async remove(@Param('id', ParseIntPipe) id: number) {
+    // Get user data before deletion
+    const user = await this.userService.findOne(id);
+    if (!user) {
+      throw new Error('User not found');
+    }
+
+    // Delete user
+    await this.userService.remove(id);
+
+    // Log activity
+    await this.userActivityService.logUserDeleted(
+      user.id,
+      user.email,
+      user.name ?? undefined,
+      { email: user.email, name: user.name ?? undefined },
+    );
+
+    return { message: 'User deleted successfully' };
   }
 }
 

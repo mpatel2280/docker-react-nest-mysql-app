@@ -3,9 +3,15 @@ Refer DOCKER_README.md
 make dev
 make dev-down 
 
-```bash
+OR 
+
+docker-compose -f docker-compose.dev.yml up --build
+
+
 # Build and start
 docker-compose -f docker-compose.dev.yml up --build
+docker-compose -f docker-compose.dev.yml up -d --build backend
+docker-compose -f docker-compose.dev.yml stop backend && docker-compose -f docker-compose.dev.yml rm -f backend && docker-compose -f docker-compose.dev.yml up -d --build backend
 
 # Stop
 docker-compose -f docker-compose.dev.yml down
@@ -39,3 +45,65 @@ docker exec nestjs-backend-dev npm run test:watch
 docker exec nestjs-backend-dev npm install @nestjs/jwt @nestjs/passport passport passport-jwt
 
 docker exec nestjs-backend-dev npm install -D @types/passport-jwt
+
+# Kafka MongoDB
+docker exec nestjs-backend-dev npm install kafkajs mongoose @nestjs/mongoose
+
+# Logs
+sleep 5 && docker logs nestjs-backend-dev --tail 30
+docker exec -it mongodb-dev mongosh -u admin -p admin123 --authenticationDatabase admin --eval "use activity_logs; db.activitylogs.find().pretty()"
+
+docker logs nestjs-backend-dev --tail 30 | grep -E "(Activity|Kafka)" || docker logs nestjs-backend-dev --tail 10
+
+
+#Status
+docker ps --format "table {{.Names}}\t{{.Status}}"
+
+docker restart nestjs-backend-dev && sleep 15 && docker logs nestjs-backend-dev --tail 30
+
+#Connect to MongoDB
+docker exec -it mongodb-dev mongosh -u admin -p admin123 --authenticationDatabase admin
+
+show dbs
+use activity_logs
+show collections
+db.activitylogs.find().pretty()
+
+docker exec mongodb-dev mongosh -u admin -p admin123 --authenticationDatabase admin activity_logs --eval "db.activitylogs.find().toArray()"
+docker exec mongodb-dev mongosh -u admin -p admin123 --authenticationDatabase admin activity_logs --eval "db.activitylogs.find().sort({timestamp: -1}).limit(10).toArray()"
+[
+  {
+    _id: ObjectId('693b974f601dd5ae71a8ac42'),
+    userId: 45,
+    userEmail: 'mongo1@test.com',
+    userName: 'Mongo1',
+    action: 'CREATE',
+    entity: 'USER',
+    entityId: 45,
+    newData: { email: 'mongo1@test.com', name: 'Mongo1' },
+    timestamp: ISODate('2025-12-12T04:17:19.857Z'),
+    createdAt: ISODate('2025-12-12T04:17:19.860Z'),
+    updatedAt: ISODate('2025-12-12T04:17:19.860Z'),
+    __v: 0
+  },
+  {
+    _id: ObjectId('693b9739601dd5ae71a8ac40'),
+    userId: 5,
+    userEmail: 'newuser@test.com',
+    userName: 'New User',
+    action: 'LOGIN',
+    entity: 'AUTH',
+    timestamp: ISODate('2025-12-12T04:16:57.161Z'),
+    createdAt: ISODate('2025-12-12T04:16:57.174Z'),
+    updatedAt: ISODate('2025-12-12T04:16:57.174Z'),
+    __v: 0
+  }
+]
+
+
+#Kafka
+docker exec -it kafka-dev bash
+kafka-topics --list --bootstrap-server localhost:9092
+kafka-console-consumer --bootstrap-server localhost:9092 --topic user-activity
+[appuser@48c7cae6624a ~]$ kafka-console-consumer --bootstrap-server localhost:9092 --topic user-activity
+{"userId":3,"userEmail":"admin1@admin.cm","userName":"Admin1","action":"UPDATE","entityId":3,"oldData":{"email":"admin2@admin.cm","name":"Admin2"},"newData":{"email":"admin1@admin.cm","name":"Admin1"},"entity":"USER","timestamp":"2025-12-12T04:23:42.140Z"}
